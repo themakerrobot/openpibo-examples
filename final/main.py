@@ -2,7 +2,8 @@ from bs4 import BeautifulSoup as bs
 import requests
 import sys, time
 
-import openpibo
+import os
+data_path = os.path.dirname(os.path.abspath(__file__))+'/../data/'
 from openpibo.edu_v1 import Pibo
 
 weather_url = "https://search.naver.com/search.naver?sm=tab_hty.top&where=nexearch&query=%EB%B6%80%EC%82%B0+%EB%82%A0%EC%94%A8&oquery=%EC%98%A4%EB%8A%98+%EB%82%A0%EC%94%A8&tqi=hvPRwsp0YiRssgy0vfVssssssMl-323245"
@@ -13,7 +14,7 @@ def LOG_PRINT(*msg):
 
 
 def play_tts(msg):
-    filename = openpibo.data_path+"audios/tts.mp3"
+    filename = data_path+"audio/tts.mp3"
     txt = "<speak><voice name='WOMAN_READ_CALM'> {} <break time='500ms'/></voice></speak>".format(msg)
 
     pibo.tts(txt, filename)
@@ -24,7 +25,7 @@ def play_tts(msg):
 def bot_weather():
     LOG_PRINT('Enter the {}'.format(sys._getframe(0).f_code.co_name))
 
-    pibo.draw_image(openpibo.data_path + "icons/weather_bot.png")
+    pibo.draw_image(data_path + "icon/weather_bot.png")
     pibo.show_display()
 
     res = requests.get(weather_url)
@@ -42,7 +43,7 @@ def bot_weather():
 def bot_picture():
     LOG_PRINT('Enter the {}'.format(sys._getframe(0).f_code.co_name))
 
-    pibo.draw_image(openpibo.data_path + "icons/camera.png")
+    pibo.draw_image(data_path + "icon/camera.png")
     pibo.show_display()
     time.sleep(1)
 
@@ -57,7 +58,7 @@ def bot_picture():
 def bot_walk(msg):
     LOG_PRINT('Enter the {}'.format(sys._getframe(0).f_code.co_name))
 
-    pibo.draw_image(openpibo.data_path + "icons/walk.png")
+    pibo.draw_image(data_path + "icon/walk.png")
     pibo.show_display()
 
     motions_db = {
@@ -106,7 +107,7 @@ def listen():
     pibo.stop_camera()
     pibo.set_motion("lookup", 1)
 
-    pibo.draw_image(openpibo.data_path + "icons/mic.png")
+    pibo.draw_image(data_path + "icon/mic.png")
     pibo.show_display()
 
     # res = pibo.stt()['data']
@@ -115,7 +116,7 @@ def listen():
     LOG_PRINT('{}: {}'.format(sys._getframe(0).f_code.co_name, res))
 
     if "no result" not in res:
-        pibo.draw_image(openpibo.data_path + "icons/check.png")
+        pibo.draw_image(data_path + "icon/check.png")
         pibo.show_display()
         decode(res)
         
@@ -148,7 +149,7 @@ if __name__ == "__main__":
     pibo = Pibo()
     LOG_PRINT("Init ...")
 
-    pibo.draw_image(openpibo.data_path + "icons/pibo_logo.png")
+    pibo.draw_image(data_path + "icon/pibo_logo.png")
     pibo.show_display()
 
     play_tts("안녕! 난 파이보야.")

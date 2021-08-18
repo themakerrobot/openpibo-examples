@@ -1,11 +1,12 @@
 import time
 
-import openpibo
+import os
+data_path = os.path.dirname(os.path.abspath(__file__))+'/../data/'
 from openpibo.audio import Audio
 
 def tts_f():
   obj = Audio()
-  obj.play(filename=openpibo.data_path+"audios/test.mp3", out='local', volume=-2000)
+  obj.play(filename=data_path+"audio/test.mp3", out='local', volume=-2000)
   time.sleep(5)
   obj.stop()
 
