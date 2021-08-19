@@ -1,12 +1,11 @@
-import os
-data_path = os.path.dirname(os.path.abspath(__file__))+'/../data/'
+import openpibo
 from openpibo.oled import Oled
 
 import time
 
 def oled_f():
   oObj = Oled()
-  oObj.draw_image(data_path+"image/clear.png")
+  oObj.draw_image(openpibo.data_path+"images/clear.png")
   oObj.show()
   time.sleep(5)
   oObj.clear()

@@ -1,12 +1,11 @@
 import time
-import os
-data_path = os.path.dirname(os.path.abspath(__file__))+'/../data/'
+import openpibo
 from openpibo.edu_v1 import Pibo
 
 def image_test():
     pibo = Pibo()
 
-    ret=pibo.draw_image(data_path+"image/clear.png")
+    ret=pibo.draw_image(openpibo.data_path+"images/clear.png")
     print(ret)
     pibo.show_display()
     time.sleep(2)
