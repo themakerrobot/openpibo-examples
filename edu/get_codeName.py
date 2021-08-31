@@ -12,7 +12,12 @@ def get_code():
         
         if user_input == 'q':
             return
-        print(pibo.get_codeMean(int(user_input)))
+        
+        result = pibo.get_codeMean(int(user_input))
+        if result['result'] == True:
+            print(result['data'])
+        else:
+            print(result['errmsg'])
 
 if __name__ == "__main__":
     get_code()
