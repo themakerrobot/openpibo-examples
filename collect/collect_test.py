@@ -1,6 +1,10 @@
 from openpibo.collect import *
 
-wiki = Namuwiki('강아지')
+weather = Weather()
+print(weather)
+
+
+wiki = Wikipedia('강아지')
 print(wiki)
 
 weather = Weather('서울')
