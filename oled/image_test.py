@@ -5,7 +5,7 @@ import time
 
 def oled_f():
   oObj = Oled()
-  oObj.draw_image(openpibo.data_path+"images/clear.png")
+  oObj.draw_image(openpibo.config['DATA_PATH']+"images/clear.png")
   oObj.show()
   time.sleep(5)
   oObj.clear()
