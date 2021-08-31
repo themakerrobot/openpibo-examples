@@ -39,6 +39,11 @@ Icon
 .VolumeIcon.icns
 .com.apple.timemachine.donotpresent
 
+# Personal Data
+*.jpg
+*.png
+*.wav
+
 # Directories potentially created on remote AFP share
 .AppleDB
 .AppleDesktop

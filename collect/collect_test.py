@@ -1,8 +1,5 @@
 from openpibo.collect import *
 
-weather = Weather()
-print(weather)
-
 
 wiki = Wikipedia('강아지')
 print(wiki)
