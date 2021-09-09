@@ -15,6 +15,7 @@ if __name__ == "__main__":
   obj = Device()
   data = obj.send_cmd(obj.code['PIR'], "on")
 
+  # q를 입력할 때까지 계속해서 명령어 입력 가능
   while True:
     pkt = input("")
     

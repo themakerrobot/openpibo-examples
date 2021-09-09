@@ -2,6 +2,7 @@ from openpibo.motion import Motion
 
 import time
 
+# 'set_motors() 실행 -> 1.1초 휴식 -> set_motors() 실행 -> 1.1초 휴식'을 무한 반복
 def move_test():
   m = Motion()
 

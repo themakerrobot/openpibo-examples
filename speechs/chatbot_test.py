@@ -3,6 +3,7 @@ from openpibo.speech import Dialog
 def weather(cmd):
   lst, _type = ["오늘", "내일"], None
 
+  # 분석한 문장 중 "오늘", "내일"이 있다면 _type=item으로 설정
   for item in lst:
     if item in cmd:
       _type = item
@@ -16,6 +17,7 @@ def weather(cmd):
 def music(cmd):
   lst, _type = ["발라드", "댄스", "락"], None
 
+  # 분석한 문장 중 "발라드", "댄스", "락"이 있다면 _type=item으로 설정
   for item in lst:
     if item in cmd:
       _type = item
@@ -28,6 +30,7 @@ def music(cmd):
 def news(cmd):
   lst, _type = ["경제", "스포츠", "문화"], None
 
+  # 분석한 문장 중 "경제", "스포츠", "문화"가 있다면 _type=item으로 설정
   for item in lst:
     if item in cmd:
       _type = item
@@ -43,6 +46,7 @@ db = {
   "뉴스":news,
 }
 
+# 사용자가 입력한 문장에 대해 형태소 분석을 실시하여 파이보가 실행하는 함수가 달라짐
 def main():
   obj = Dialog()
   print("대화 시작합니다.")
@@ -52,13 +56,16 @@ def main():
     if c == "그만":
       break
 
+    # 사용자가 입력한 질문에 대한 형태소 분석
     d = obj.mecab_morphs(c)
-    #print("형태소 분석: ", d)
+    # print("형태소 분석: ", d)
+    # 분석한 문장 중 "날씨", "음악", "뉴스"가 있다면 해당 key값의 함수 실행
     for key in db.keys():
       if key in d:
         db[key](d)
         matched = True
 
+    # key 값이 없다면 대화봇 실행
     if matched == False:
       print("대화봇 > ", obj.get_dialog(c))
 

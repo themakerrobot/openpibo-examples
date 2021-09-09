@@ -17,6 +17,7 @@ def test_func():
   if len(faces) < 1:
     print(" No face")
   else:
+    # 얼굴 학습(학습할  이미지 데이터, 얼굴 1개 위치, 학습할 얼굴 이름)
     print(" Train:", faceObj.train_face(img, faces[0], "yjlee"))
   print("After Train, DB:", faceObj.get_db()[0])
 

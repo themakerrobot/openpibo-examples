@@ -1,5 +1,6 @@
 from openpibo.speech import Dialog
 
+# mode(pos, morphs, nouns)에 따른 문장 분석
 def mecab_f(string, mode):
   print("Input: ", string)
   obj = Dialog()

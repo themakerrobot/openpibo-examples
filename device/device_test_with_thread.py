@@ -22,10 +22,12 @@ def decode_pkt(pkt):
   print("Recv:", pkt)
 
 def update():
+  # 현재 timestamp 얻기
   system_check_time = time.time()
   battery_check_time = time.time()
 
   while True:
+    # que에 pkt가 존재하면 pkt를 제거하고 반환하여 Device에 메시지 전송 & decode_pkt 실행
     if que.qsize() > 0:
       data = obj.send_raw(que.get())
       decode_pkt(data)
@@ -46,9 +48,11 @@ if __name__ == "__main__":
   obj.send_cmd(obj.code['PIR'], "on")
 
   t = Thread(target=update, args=())
-  t.daemon = True
-  t.start()
+  t.daemon = True # main thread 종료시 update 메서드 종료
+  t.start()			  # update 메서드 실행
 
+  # main thread  
+  # 사용자가 q를 입력할 때까지 무한 반복, que에 pkt 삽입
   while True:
     pkt = input("")
     if pkt == 'q':

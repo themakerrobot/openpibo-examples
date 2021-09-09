@@ -1,5 +1,6 @@
 from openpibo.vision import Camera
 
+# 모니터에 3초간 이미지 스트리밍
 def test_func():
   # instance
   cam = Camera()
