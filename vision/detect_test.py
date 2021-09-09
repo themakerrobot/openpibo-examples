@@ -3,7 +3,7 @@ from openpibo.vision import Detect
 
 def test_func():
   # instance
-  cam = Camera()  # cCamera 클래스에 대한 객체 생성
+  cam = Camera()  # Camera 클래스에 대한 객체 생성
   det = Detect()
 
   # Capture / Read file

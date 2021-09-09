@@ -50,7 +50,7 @@
   import openpibo
   
   def tts_f():
-    obj = Audio()	# 인스턴스 생성, obj는 cAudio 클래스의 인스턴스
+    obj = Audio()	# 인스턴스 생성, obj는 Audio 클래스의 인스턴스
     obj.play(filename=openpibo.config['DATA_PATH']+"audio/test.mp3", out='local', volume=-2000) # '인스턴스.메서드'로 Audio 클래스의 play 호출
     time.sleep(5)
     obj.stop()
@@ -377,7 +377,7 @@ if __name__ == "__main__":
   m.set_motion(name="wave3", cycle=10)
 ```
 
-아래는 motion_db.json의 일부입니다. motion_db는 `cMotion.get_motion(name=None)` 함수로 확인할 수 있습니다.( [1.3.3 Motion 생성-cMotion 클래스] 참고 )
+아래는 motion_db.json의 일부입니다. motion_db는 `Motion.get_motion(name=None)` 함수로 확인할 수 있습니다.
 
 ```
 {
@@ -792,7 +792,7 @@ Output:  ['아버지', '가방', '에', '들어가', '신다']
 
 - NNG: 일반 명사 / JKB: 부사격 조사 / VV: 동사 / EP: 선어말 어미 / EC: 연결 어미
 
-  ( 품사 태그표: https://docs.google.com/spreadsheets/d/1OGAjUvalBuX-oZvZ_-9tEfYD2gQe7hTGsgUpiiBSXI8/edit#gid=0 )
+  ( 품사 태그표: [https://docs.google.com/spreadsheets/d/1OGAjUvalBuX-oZvZ_-9tEfYD2gQe7hTGsgUpiiBSXI8/edit#gid=0](https://docs.google.com/spreadsheets/d/1OGAjUvalBuX-oZvZ_-9tEfYD2gQe7hTGsgUpiiBSXI8/edit#gid=0))
 
 ## stt_test.py
 
@@ -855,7 +855,7 @@ from openpibo.audio import Audio
 # tts.mp3 파일의 문자 데이터를 음성 언어로 변환 후, 파이보 스피커에 출력
 def tts_f():
   tObj = Speech()
-  filename = openpibo.config['DATA_PATH']+"/tts.mp3"
+  filename = openpibo.config['DATA_PATH']+"audio/tts.mp3"
   tObj.tts("<speak>\
               <voice name='MAN_READ_CALM'>안녕하세요. 반갑습니다.<break time='500ms'/></voice>\
             </speak>"\
@@ -957,7 +957,7 @@ from openpibo.vision import Detect
 
 def test_func():
   # instance
-  cam = Camera()  # cCamera 클래스에 대한 객체 생성
+  cam = Camera()  # Camera 클래스에 대한 객체 생성
   det = Detect()
 
   # Capture / Read file
