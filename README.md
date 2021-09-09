@@ -175,7 +175,6 @@ pi@raspberrypi:~/x-openpibo-example/collect $ sudo python3 collect_test.py
 > 인자값으로 명령어를 입력하여 파이보를 제어합니다. 
 
 ```python
-...
 from openpibo.device import Device
 
 import argparse
@@ -216,7 +215,6 @@ Receive: 24:oK
 > 명령어를 입력하여 파이보를 제어합니다. 
 
 ```python
-...
 from openpibo.device import Device
 
 if __name__ == "__main__":
@@ -272,7 +270,6 @@ q
   - start()가 호출되기 전에 설정
 
 ```python
-...
 from openpibo.device import Device
 
 import time
