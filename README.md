@@ -114,7 +114,6 @@
 > mp3 파일을 재생 및 정지합니다.
 
 ```python
-...
 import time
 
 import openpibo
