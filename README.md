@@ -7,16 +7,16 @@
 다음의 코드를 입력하여 예제 파일을 실행할 수 있습니다.
 
 ```shell
-~ $ git clone https://github.com/themakerrobot/x-openpibo-example.git
-~ $ cd x-openpibo-example/{폴더명}
-~/x-openpibo-example/{폴더명} $ sudo python3 {파일명}
+~ $ git clone https://github.com/themakerrobot/openpibo-examples.git
+~ $ cd openpibo-examples/{폴더명}
+~/openpibo-examples/{폴더명} $ sudo python3 {파일명}
 ```
 
 아래는 audio 폴더 내에 있는 play_test.py를 실행하는 예제 코드입니다.
 
 ```shell
-~ $ cd x-openpibo-example/audio
-~/x-openpibo-example/audio $ sudo python3 play_test.py
+~ $ cd openpibo-examples/audio
+~/openpibo-examples/audio $ sudo python3 play_test.py
 ```
 
 ## 사전 학습
@@ -30,7 +30,7 @@
   아래는 openpibo에 있는 audio의 Audio 클래스를 import하는 예제입니다.
 
   ```python
-  # x-openpibo-example/audio/play_test.py
+  # openpibo-examples/audio/play_test.py
   
   from openpibo.audio import audio
 
@@ -45,16 +45,16 @@
   아래는 Audio 클래스의 함수를 호출하여 test.mp3 파일을 재생하는 코드입니다.
 
   ```python
-  # x-openpibo-example/audio/play_test.py
+  # openpibo-examples/audio/play_test.py
   from openpibo.audio import Audio
   import openpibo
-  
+
   def tts_f():
-    obj = Audio()	# 인스턴스 생성, obj는 Audio 클래스의 인스턴스
+    obj = Audio()  # 인스턴스 생성, obj는 Audio 클래스의 인스턴스
     obj.play(filename=openpibo.config['DATA_PATH']+"audio/test.mp3", out='local', volume=-2000) # '인스턴스.메서드'로 Audio 클래스의 play 호출
     time.sleep(5)
     obj.stop()
-  
+
   if __name__ == "__main__":
     tts_f()
   ```
@@ -87,10 +87,10 @@
 
   ```python
   # play 함수 호출
-  obj.play(filename=openpibo.config['DATA_PATH']+"audio/test.mp3", out='local', volume=-2000)   # 방법1
-  obj.play(filename=openpibo.config['DATA_PATH']+"audio/test.mp3") 							    # 방법2 (local, volume 기본 인자값이 있으므로 가능)
-  obj.play(openpibo.config['DATA_PATH']+"audio/test.mp3", 'local', -2000)						# 방법3 (인자의 순서가 맞기 때문에 변수명 안써도 가능)
-  obj.play(out='local', volume=-2000, openpibo.config['DATA_PATH']+"audio/test.mp3")	# 방법4 (키워드 인자의 경우 순서가 바뀌어도 가능)
+  obj.play(filename=openpibo.config['DATA_PATH']+"audio/test.mp3", out='local', volume=-2000) # 방법1
+  obj.play(filename=openpibo.config['DATA_PATH']+"audio/test.mp3") # 방법2 (local, volume 기본 인자값이 있으므로 가능)
+  obj.play(openpibo.config['DATA_PATH']+"audio/test.mp3", 'local', -2000) # 방법3 (인자의 순서가 맞기 때문에 변수명 안써도 가능)
+  obj.play(out='local', volume=-2000, openpibo.config['DATA_PATH']+"audio/test.mp3") # 방법4 (키워드 인자의 경우 순서가 바뀌어도 가능)
   ```
 
   단, 아래와 같이 키워드 인자를 활용한 뒤에 위치 인자를 활용할 수는 없습니다.
@@ -165,7 +165,7 @@ print(news) # 경제 뉴스 출력
 **collect_test.py 실행**
 
 ```shell
-pi@raspberrypi:~/x-openpibo-example/collect $ sudo python3 collect_test.py
+pi@raspberrypi:~/openpibo-examples/collect $ sudo python3 collect_test.py
 ```
 
 # Device
@@ -184,7 +184,7 @@ def main(args):
   print('Send:', args.command)        # 실행한 명령어 출력
   data = obj.send_raw(args.command)   # Device에 메시지 전송하고 응답받음
   print('Receive:', data)             # Device로부터 받은 응답 출력
-    
+
 if __name__ == "__main__":
   parser = argparse.ArgumentParser()  # 인자값을 받을 수 있는 인스턴스 생성
   parser.add_argument('--command', help='check specific decvice', required=True) # default=0, 입력받고자 하는 인자의 조건 설정
@@ -198,7 +198,7 @@ if __name__ == "__main__":
 아래는 PIBO의 양쪽 눈 색깔을 변경(24)하는 명령어 입력 코드입니다.
 
 ```shell
-pi@raspberrypi:~/x-openpibo-example/device $ sudo python3 device_once_test.py --command "#24:255,0,0,0,0,255:!"
+pi@raspberrypi:~/openpibo-examples/device $ sudo python3 device_once_test.py --command "#24:255,0,0,0,0,255:!"
 ```
 
 **device_once_test.py 결과**
@@ -208,7 +208,7 @@ Send: #24:255,0,0,0,0,255:!
 Receive: 24:oK
 ```
 
-![](images/Device_device_once_test.JPG)
+![](.images/Device_device_once_test.JPG)
 
 ## device_test.py
 
@@ -234,7 +234,7 @@ if __name__ == "__main__":
 **device_test.py 실행**
 
 ```shell
-pi@raspberrypi:~/x-openpibo-example/device $ sudo python3 device_test.py
+pi@raspberrypi:~/openpibo-examples/device $ sudo python3 device_test.py
 ```
 
 **device_test.py 결과**
@@ -251,7 +251,7 @@ pi@raspberrypi:~/x-openpibo-example/device $ sudo python3 device_test.py
 q
 ```
 
-![](images/Device_device2.JPG)
+![](.images/Device_device2.JPG)
 
 ## device_test_with_thread.py
 
@@ -322,12 +322,12 @@ if __name__ == "__main__":
     que.put(pkt)
 ```
 
-![Device_thread_flow](images/Device_thread_flow.png) 
+![Device_thread_flow](.images/Device_thread_flow.png) 
 
 **device_test_with_thread.py 실행**
 
 ```shell
-pi@raspberrypi:~/x-openpibo-example/device $ sudo python3 device_test_with_thread.py 
+pi@raspberrypi:~/openpibo-examples/device $ sudo python3 device_test_with_thread.py 
 ```
 
 **device_test_with_thread.py 결과**
@@ -404,7 +404,7 @@ if __name__ == "__main__":
 **motion_test.py 실행**
 
 ```shell
-pi@raspberrypi:~/x-openpibo-example/motion $ sudo python3 motion_test.py
+pi@raspberrypi:~/openpibo-examples/motion $ sudo python3 motion_test.py
 ```
 
 ## motor_test.py
@@ -439,7 +439,7 @@ if __name__ == "__main__":
 **motor_test.py 실행**
 
 ```shell
-pi@raspberrypi:~/x-openpibo-example/motion $ sudo python3 motor_test.py 
+pi@raspberrypi:~/openpibo-examples/motion $ sudo python3 motor_test.py 
 ```
 
 ## multi_motor_test.py
@@ -466,7 +466,7 @@ if __name__ == "__main__":
 **multi_motor_test.py 실행**
 
 ```shell
-pi@raspberrypi:~/x-openpibo-example/motion $ sudo python3 multi_motor_test.py
+pi@raspberrypi:~/openpibo-examples/motion $ sudo python3 multi_motor_test.py
 ```
 
 ## pymotor_test.py
@@ -488,7 +488,7 @@ def test():
   while True:
     move(2, 50, 0, 30)
     time.sleep(2)
-  
+
     move(2, 50, 10, -30)
     time.sleep(2)
 
@@ -505,7 +505,7 @@ if __name__ == "__main__":
 **pymotor_test.py 실행**
 
 ```shell
-pi@raspberrypi:~/x-openpibo-example/motion $ sudo python3 pymotor_test.py 
+pi@raspberrypi:~/openpibo-examples/motion $ sudo python3 pymotor_test.py
 ```
 
 **pymotor_test.py 결과**
@@ -539,12 +539,12 @@ if __name__ == "__main__":
 **figure_test.py 실행**
 
 ```shell
-pi@raspberrypi:~/x-openpibo-example/oled $ sudo python3 figure_test.py 
+pi@raspberrypi:~/openpibo-examples/oled $ sudo python3 figure_test.py
 ```
 
 **figure_test.py 결과**
 
-![](images/OLED_figure_test.JPG)
+![](.images/OLED_figure_test.JPG)
 
 ## image_test.py
 
@@ -559,7 +559,7 @@ import time
 # 화면에 clear.png 이미지 5초간 표시
 def oled_f():
   oObj = Oled()
-  oObj.draw_image(openpibo.config['DATA_PATH']+"images/clear.png")  # clear.png 그리기
+  oObj.draw_image(openpibo.config['DATA_PATH']+".images/clear.png")  # clear.png 그리기
   oObj.show()   # 화면에 표시
   time.sleep(5) # 5초동안 프로세스 정지
   oObj.clear()  # 화면 지우기
@@ -572,12 +572,12 @@ if __name__ == "__main__":
 **image_test.py 실행**
 
 ```shell
-pi@raspberrypi:~/x-openpibo-example/oled $ sudo python3 image_test.py
+pi@raspberrypi:~/openpibo-examples/oled $ sudo python3 image_test.py
 ```
 
 **image_test.py 결과**
 
-![OLED_image](images/OLED_image.png)
+![OLED_image](.images/OLED_image.png)
 
 ## self_test.py
 
@@ -597,7 +597,7 @@ if __name__ == "__main__":
 **self_test.py 실행**
 
 ```shell
-pi@raspberrypi:~/x-openpibo-example/oled $ sudo python3 self_test.py
+pi@raspberrypi:~/openpibo-examples/oled $ sudo python3 self_test.py
 ```
 
 ## text_test.py
@@ -633,12 +633,12 @@ if __name__ == "__main__":
 **text_test.py 실행**
 
 ```shell
-pi@raspberrypi:~/x-openpibo-example/oled $ sudo python3 text_test.py
+pi@raspberrypi:~/openpibo-examples/oled $ sudo python3 text_test.py
 ```
 
 **text_test.py 결과**
 
-![](images/OLED_text_test.JPG)
+![](.images/OLED_text_test.JPG)
 
 # Speech
 
@@ -724,12 +724,12 @@ if __name__ == "__main__":
   main()
 ```
 
-![](images/Speech_chatbot_flow.png)
+![](.images/Speech_chatbot_flow.png)
 
 **chatbot_test.py 실행**
 
 ```shell
-pi@raspberrypi:~/x-openpibo-example/speech $ sudo python3 chatbot_test.py 
+pi@raspberrypi:~/openpibo-examples/speech $ sudo python3 chatbot_test.py 
 ```
 
 **chatbot_test.py 결과**
@@ -772,7 +772,7 @@ if __name__ == "__main__":
 **mecab_test.py 실행**
 
 ```shell
-pi@raspberrypi:~/x-openpibo-example/speech $ sudo python3 mecab_test.py 
+pi@raspberrypi:~/openpibo-examples/speech $ sudo python3 mecab_test.py
 ```
 
 **mecab_test.py 결과**
@@ -808,7 +808,7 @@ print(ret)
 **stt_test.py 실행**
 
 ```shell
-pi@raspberrypi:~/x-openpibo-example/speech $ sudo python3 stt_test.py 
+pi@raspberrypi:~/openpibo-examples/speech $ sudo python3 stt_test.py
 ```
 
 ## translate_test.py
@@ -833,7 +833,7 @@ if __name__ == "__main__":
 **translate_test.py 실행**
 
 ```shell
-pi@raspberrypi:~/x-openpibo-example/speech $ sudo python3 translate_test.py 
+pi@raspberrypi:~/openpibo-examples/speech $ sudo python3 translate_test.py
 ```
 
 **translate_test.py 결과**
@@ -900,7 +900,7 @@ if __name__ == "__main__":
 **tts_test.py 실행**
 
 ```shell
-pi@raspberrypi:~/x-openpibo-example/speech $ sudo python3 tts_test.py 
+pi@raspberrypi:~/openpibo-examples/speech $ sudo python3 tts_test.py 
 ```
 
 
@@ -940,12 +940,12 @@ if __name__ == "__main__":
 **camera_test.py 실행**
 
 ```shell
-pi@raspberrypi:~/x-openpibo-example/vision $ sudo python3 camera_test.py 
+pi@raspberrypi:~/openpibo-examples/vision $ sudo python3 camera_test.py 
 ```
 
 **camera_test.py 결과**
 
-![Vision_camera](images/Vision_camera.png)
+![Vision_camera](.images/Vision_camera.png)
 
 ## detect_test.py
 
@@ -975,7 +975,7 @@ if __name__ == "__main__":
 **detect_test.py 실행**
 
 ```shell
-pi@raspberrypi:~/x-openpibo-example/vision $ sudo python3 detect_test.py 
+pi@raspberrypi:~/openpibo-examples/vision $ sudo python3 detect_test.py 
 ```
 
 **detect_test.py 결과**
@@ -992,7 +992,7 @@ oO a |
 Fs
 ```
 
-![](images/Vision_detect1.JPG)
+![](.images/Vision_detect1.JPG)
 
 ## draw_test.py
 
@@ -1032,11 +1032,11 @@ pi@raspberrypi:~/openpibo-example/vision $ sudo python3 draw_test.py
 
 **draw_test.py 결과**
 
-![](images/Vision_draw.png)
+![](.images/Vision_draw.png)
 
 ## face_recognize_test.py
 
-> 이미지에서 얼굴을 찾아 나이와 성별을 추정합니다. 
+> 이미지에서 얼굴을 찾아 나이와 성별을 추정합니다.
 
 ```python
 from openpibo.vision import Camera
@@ -1089,12 +1089,12 @@ if __name__ == "__main__":
 **face_recognize_test.py 실행**
 
 ```shell
-pi@raspberrypi:~/x-openpibo-example/vision $ sudo python3 face_recognize_test.py 
+pi@raspberrypi:~/openpibo-examples/vision $ sudo python3 face_recognize_test.py 
 ```
 
 **face_recognize_test.py 결과**
 
-![](images/Vision_face_reog.png)
+![](.images/Vision_face_reog.png)
 
 ## face_train_test.py
 
@@ -1121,7 +1121,7 @@ def test_func():
     print(" No face")
   else:
     # 얼굴 학습(학습할  이미지 데이터, 얼굴 1개 위치, 학습할 얼굴 이름)
-    print(" Train:", faceObj.train_face(img, faces[0], "yjlee"))
+    print(" Train:", faceObj.train_face(img, faces[0], "pibo"))
   print("After Train, DB:", faceObj.get_db()[0])
 
   img = cam.read()
@@ -1143,7 +1143,7 @@ def test_func():
   print("After Load db, DB:", faceObj.get_db()[0])
 
   # delete Face
-  faceObj.delete_face("yjlee")
+  faceObj.delete_face("pibo")
   print("After Delete face:", faceObj.get_db()[0])
 
 if __name__ == "__main__":
@@ -1153,7 +1153,7 @@ if __name__ == "__main__":
 **face_train_test.py 실행**
 
 ```shell
-pi@raspberrypi:~/x-openpibo-example/vision $ sudo python3 face_train_test.py
+pi@raspberrypi:~/openpibo-examples/vision $ sudo python3 face_train_test.py
 ```
 
 **face_train_test.py 결과**
@@ -1161,10 +1161,10 @@ pi@raspberrypi:~/x-openpibo-example/vision $ sudo python3 face_train_test.py
 ```python
 Start DB: []
  Train: None
-After Train, DB: ['yjlee']
- Recognize: {'name': 'yjlee', 'score': 0.02}
+After Train, DB: ['pibo']
+ Recognize: {'name': 'pibo', 'score': 0.02}
 After reset db, DB: []
-After Load db, DB: ['yjlee']
+After Load db, DB: ['pibo']
 After Delete face: []
 ```
 
@@ -1190,9 +1190,9 @@ if __name__ == "__main__":
 **streaming_test.py 실행**
 
 ```shell
-pi@raspberrypi:~/x-openpibo-example/vision $ sudo python3 streaming_test.py 
+pi@raspberrypi:~/openpibo-examples/vision $ sudo python3 streaming_test.py
 ```
 
 **streaming_test.py 결과**
 
-![Vision_streaming_test](images/Vision_streaming_test.png)
+![Vision_streaming_test](.images/Vision_streaming_test.png)
