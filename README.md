@@ -51,7 +51,7 @@
 
   def tts_f():
     obj = Audio()  # 인스턴스 생성, obj는 Audio 클래스의 인스턴스
-    obj.play(filename=openpibo.config['DATA_PATH']+"audio/test.mp3", out='local', volume=-2000) # '인스턴스.메서드'로 Audio 클래스의 play 호출
+    obj.play(filename=openpibo.config['DATA_PATH']+"/audio/test.mp3", out='local', volume=-2000) # '인스턴스.메서드'로 Audio 클래스의 play 호출
     time.sleep(5)
     obj.stop()
 
@@ -87,16 +87,16 @@
 
   ```python
   # play 함수 호출
-  obj.play(filename=openpibo.config['DATA_PATH']+"audio/test.mp3", out='local', volume=-2000) # 방법1
-  obj.play(filename=openpibo.config['DATA_PATH']+"audio/test.mp3") # 방법2 (local, volume 기본 인자값이 있으므로 가능)
-  obj.play(openpibo.config['DATA_PATH']+"audio/test.mp3", 'local', -2000) # 방법3 (인자의 순서가 맞기 때문에 변수명 안써도 가능)
-  obj.play(out='local', volume=-2000, openpibo.config['DATA_PATH']+"audio/test.mp3") # 방법4 (키워드 인자의 경우 순서가 바뀌어도 가능)
+  obj.play(filename=openpibo.config['DATA_PATH']+"/audio/test.mp3", out='local', volume=-2000) # 방법1
+  obj.play(filename=openpibo.config['DATA_PATH']+"/audio/test.mp3") # 방법2 (local, volume 기본 인자값이 있으므로 가능)
+  obj.play(openpibo.config['DATA_PATH']+"/audio/test.mp3", 'local', -2000) # 방법3 (인자의 순서가 맞기 때문에 변수명 안써도 가능)
+  obj.play(out='local', volume=-2000, openpibo.config['DATA_PATH']+"/audio/test.mp3") # 방법4 (키워드 인자의 경우 순서가 바뀌어도 가능)
   ```
 
   단, 아래와 같이 키워드 인자를 활용한 뒤에 위치 인자를 활용할 수는 없습니다.
 
   ```python
-  obj.play(openpibo.config['DATA_PATH']+"audio/test.mp3", 'local', -2000)  (X)
+  obj.play(openpibo.config['DATA_PATH']+"/audio/test.mp3", 'local', -2000)  (X)
   ```
 
 - `if __name__ == "__main__"`
@@ -122,7 +122,7 @@ from openpibo.audio import Audio
 # test.mp3 파일 5초 재생 후 정지
 def tts_f():
   obj = Audio()
-  obj.play(filename=openpibo.config['DATA_PATH']+"audio/test.mp3", out='local', volume=-2000)
+  obj.play(filename=openpibo.config['DATA_PATH']+"/audio/test.mp3", out='local', volume=-2000)
   time.sleep(5) # 5초동안 프로세스 정지
   obj.stop()
 
@@ -559,7 +559,7 @@ import time
 # 화면에 clear.png 이미지 5초간 표시
 def oled_f():
   oObj = Oled()
-  oObj.draw_image(openpibo.config['DATA_PATH']+".images/clear.png")  # clear.png 그리기
+  oObj.draw_image(openpibo.config['DATA_PATH']+"/image/clear.png")  # clear.png 그리기
   oObj.show()   # 화면에 표시
   time.sleep(5) # 5초동안 프로세스 정지
   oObj.clear()  # 화면 지우기
@@ -855,7 +855,7 @@ from openpibo.audio import Audio
 # tts.mp3 파일의 문자 데이터를 음성 언어로 변환 후, 파이보 스피커에 출력
 def tts_f():
   tObj = Speech()
-  filename = openpibo.config['DATA_PATH']+"audio/tts.mp3"
+  filename = openpibo.config['DATA_PATH']+"/audio/tts.mp3"
   tObj.tts("<speak>\
               <voice name='MAN_READ_CALM'>안녕하세요. 반갑습니다.<break time='500ms'/></voice>\
             </speak>"\
