@@ -10,7 +10,6 @@ def tts_f():
               <voice name='MAN_READ_CALM'>안녕하세요. 반갑습니다.<break time='500ms'/></voice>\
             </speak>"\
           , filename)
-  print(filename)
   aObj = Audio()
   aObj.play(filename, out='local', volume=-1500)  # 파이보 스피커로 filename 출력
 

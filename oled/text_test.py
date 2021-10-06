@@ -4,8 +4,7 @@ from openpibo.oled import Oled
 def oled_f():
   oObj = Oled()
   oObj.set_font(size=15)
-  
-oObj.draw_text((0, 0), "안녕? 난 파이보야 ")  # (0,0)에 문자열 출력
+  oObj.draw_text((0, 0), "안녕? 난 파이보야 ")  # (0,0)에 문자열 출력
   oObj.draw_text((0,20), "☆  ★ ") # (0,20)에 문자열 출력
   oObj.show() # 화면에 표시
 
