@@ -1,16 +1,15 @@
-from openpibo.collect import *
+from openpibo.collect import Wikipedia, Weather, News
 
-# 위키피디아 스크래핑
-wiki = Wikipedia()
-wiki.search('강아지')
-print(wiki)
+wiki = Wikipedia().search('사과')
+print('=== Wikipedia ===')
+print('Result:', wiki['0'])
 
-# 날씨 데이터 가져오기
-weather = Weather()
-weather.search('서울')
-print(weather)
+weather = Weather().search('서울')
+print('\n\n=== Weather ===')
+print('Keyword:', Weather.region_list.keys())
+print('Result:', weather)
 
-# 뉴스 가져오기
-news = News()
-news.search('경제')
-print(news)
+news = News().search('경제')
+print('\n\n=== News ===')
+print('Keyword:', News.topic_list.keys())
+print('Result:', news)
