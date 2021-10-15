@@ -1,47 +1,47 @@
 from openpibo.vision import Camera
 from openpibo.vision import Face
 
-def test_func():
+def run(gui=False):
   # instance
-  cam = Camera()
-  faceObj = Face()
+  o_cam = Camera()
+  o_face = Face()
 
-  print("Start DB:", faceObj.get_db()[0])
+  print("Start DB:", o_face.get_db()[0])
   
   # Capture / Read file
-  img = cam.read()
-  #img = cam.imread("/home/pi/test.jpg")
+  img = o_cam.read()
+  #img = o_cam.imread("/home/pi/test.jpg")
 
   # Train face
-  faces = faceObj.detect(img)
+  faces = o_face.detect(img)
   if len(faces) < 1:
     print(" No face")
   else:
     # 얼굴 학습(학습할  이미지 데이터, 얼굴 1개 위치, 학습할 얼굴 이름)
-    print(" Train:", faceObj.train_face(img, faces[0], "yjlee"))
-  print("After Train, DB:", faceObj.get_db()[0])
+    print(" Train:", o_face.train_face(img, faces[0], "pibo"))
+  print("After Train, DB:", o_face.get_db()[0])
 
-  img = cam.read()
-  faces = faceObj.detect(img)
+  img = o_cam.read()
+  faces = o_face.detect(img)
   if len(faces) < 1:
     print(" No face")
   else:
-    print(" Recognize:", faceObj.recognize(img, faces[0]))
+    print(" Recognize:", o_face.recognize(img, faces[0]))
 
   # Save DB
-  faceObj.save_db("./facedb")
+  o_face.save_db("./facedb")
 
   # Reset DB
-  faceObj.init_db()
-  print("After reset db, DB:", faceObj.get_db()[0])
+  o_face.init_db()
+  print("After reset db, DB:", o_face.get_db()[0])
   
   # Load DB
-  faceObj.load_db("facedb")
-  print("After Load db, DB:", faceObj.get_db()[0])
+  o_face.load_db("facedb")
+  print("After Load db, DB:", o_face.get_db()[0])
 
   # delete Face
-  faceObj.delete_face("yjlee")
-  print("After Delete face:", faceObj.get_db()[0])
+  o_face.delete_face("yjlee")
+  print("After Delete face:", o_face.get_db()[0])
 
 if __name__ == "__main__":
-  test_func()
+  run(gui=False)

@@ -1,28 +1,24 @@
-from openpibo.motion import PyMotion
-
 import time
 
-m = PyMotion()
+from openpibo.motion import PyMotion
 
-def move(n, speed, accel, degree):
-  m.set_speed(n, speed)
-  m.set_acceleration(n, accel)
-  m.set_motor(n, degree)
+def move(n, p, s, a):
+  o.set_speed(n, s)         # n번 모터의 속도를 s로 변경
+  o.set_acceleration(n, a)  # n번 모터의 가속도를 a로 변경
+  o.set_motor(n, p)        # n번 모터의 위치를 p로 이동
 
 # 2초 간격으로 move() 실행 무한 반복
-def test():
+def run():
   while True:
-    move(2, 50, 0, 30)
+    move(2, 30, 50,  0)
+    move(8, 30, 50, 10)
     time.sleep(2)
   
-    move(2, 50, 10, -30)
+    move(2,-30, 50,  0)
+    move(8,-30, 50, 10)
     time.sleep(2)
 
-# Init 출력 -> move() -> 1초  휴식 -> Start 출력 -> test()
 if __name__ == "__main__":
-  print("Init")
-  move(2, 20, 0, 0)
-  time.sleep(1)
-
-  print("Start")
-  test()
+  o = PyMotion()
+  
+  run()

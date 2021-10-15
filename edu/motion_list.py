@@ -2,20 +2,19 @@ import time, pprint
 
 from openpibo.edu_v1 import Pibo
 
-def get_motion():
-    pibo = Pibo()
-    motion_list = pibo.get_motion()
-    print(motion_list['data'])
+def run():
+  print("=== Motion list ===\n", pibo.get_motion()['data'])
 
-    time.sleep(0.5)
-    print('모션을 입력하면 해당 모션의 정보를 조회할 수 있습니다.(q: 종료)')
-    while True:
-        user_input = input('입력: ')
-        
-        if user_input == 'q':
-            return
-        info = pibo.get_motion(user_input)
-        pprint.pprint(info['data'])
+  while True:
+    user_input = input('\n 입력> ')
+    if user_input == 'q':
+      break
+
+    result = pibo.get_motion(user_input)
+    result = result['data'] if type(result['data']) is dict else f'{user_input} not support'
+    pprint.pprint(result)
 
 if __name__ == "__main__":
-    get_motion()
+  pibo = Pibo()
+
+  run()

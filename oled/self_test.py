@@ -1,10 +1,12 @@
 from openpibo.oled import Oled
 
-def oled_f():
-  print('my oled design')
+def run():
+  """
+  make your own code
+  """
 
 
 if __name__ == "__main__":
-  pibo = Oled()
-  oled_f()
+  o = Oled()
 
+  run()

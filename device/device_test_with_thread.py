@@ -9,17 +9,14 @@
  - PIR(30) -> ex) #30:!
  - TOUCH(31) -> ex) #31:!
 '''
-from openpibo.device import Device
-
 import time
-from threading import Thread, Lock
+from threading import Thread
 from queue import Queue
 
-obj = Device()
-que = Queue()
+from openpibo.device import Device
 
 def decode_pkt(pkt):
-  print("Recv:", pkt)
+  print("Receive:", pkt)
 
 def update():
   # 현재 timestamp 얻기
@@ -29,23 +26,26 @@ def update():
   while True:
     # que에 pkt가 존재하면 pkt를 제거하고 반환하여 Device에 메시지 전송 & decode_pkt 실행
     if que.qsize() > 0:
-      data = obj.send_raw(que.get())
+      data = o.send_raw(que.get())
       decode_pkt(data)
 
     if time.time() - system_check_time > 1:  # 시스템 메시지 1초 간격 전송
-      data = obj.send_cmd(obj.code['SYSTEM'])
+      data = o.send_cmd(Device.code_list['SYSTEM'])
       decode_pkt(data)
       system_check_time = time.time()
 
     if time.time() - battery_check_time > 10: # 배터리 메시지 10초 간격 전송
-      data = obj.send_cmd(obj.code['BATTERY'])
+      data = o.send_cmd(Device.code_list['BATTERY'])
       decode_pkt(data)
       battery_check_time = time.time()
 
     time.sleep(0.01)
 
 if __name__ == "__main__":
-  obj.send_cmd(obj.code['PIR'], "on")
+  o = Device()
+  que = Queue()
+
+  o.send_cmd(Device.code_list['PIR'], "on")
 
   t = Thread(target=update, args=())
   t.daemon = True # main thread 종료시 update 메서드 종료

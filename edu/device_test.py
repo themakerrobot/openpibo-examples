@@ -1,19 +1,10 @@
-import random
-
 from openpibo.edu_v1 import Pibo
 
-def msg_device(msg):
-    print(msg)
-
-def device_test():
-    ret=pibo.start_devices(msg_device)
-    print(ret)
-
+def run():
+  result = pibo.check_device()
+  print(result)
 
 if __name__ == "__main__":
-    pibo = Pibo()
-    device_test()
+  pibo = Pibo()
 
-    while True:
-        cmd = [random.randint(0, 255) for i in range(6)]
-        pibo.eye_on(*cmd)
+  run()

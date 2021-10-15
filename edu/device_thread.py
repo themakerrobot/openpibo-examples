@@ -1,20 +1,21 @@
 import time
+
 from openpibo.edu_v1 import Pibo
 
-def msg_device(msg):
-    print(msg)
-    if "touch" in msg:
-      pibo.eye_on("red")
-    else:
-      pibo.eye_off()
+def decode_message(msg):
+  print(msg)
+  if "touch" in msg:
+    pibo.eye_on(255,0,0)
+  else:
+    pibo.eye_off()
 
-
-def device_thread_test():
-    ret=pibo.start_devices(msg_device)
-    print(ret)
-    time.sleep(12)
-    pibo.stop_devices()
+def run():
+  ret = pibo.start_thread_device(decode_message)
+  print(ret)
+  time.sleep(12)
+  pibo.stop_thread_device()
 
 if __name__ == "__main__":
-    pibo = Pibo()
-    device_thread_test()
+  pibo = Pibo()
+
+  run()

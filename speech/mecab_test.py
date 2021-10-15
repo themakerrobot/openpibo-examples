@@ -1,19 +1,20 @@
 from openpibo.speech import Dialog
 
 # mode(pos, morphs, nouns)에 따른 문장 분석
-def mecab_f(string, mode):
-  print("Input: ", string)
-  obj = Dialog()
+def run():
+  o = Dialog()
+  string = "아버지 가방에 들어가신다"
   
-  if mode == "pos":
-    data = obj.mecab_pos(string)
-  elif mode == "morphs":
-    data = obj.mecab_morphs(string)
-  elif mode == "nouns":
-    data = obj.mecab_nouns(string)
-  print("Output: ", data)
+  print("입력: ", string)
+  
+  result = o.mecab_pos(string)
+  print(f' pos: {result}')
+  result = o.mecab_morphs(string)
+  print(f' morphs: {result}')
+  result = o.mecab_nouns(string)
+  print(f' nouns: {result}')
 
 if __name__ == "__main__":
-  mecab_f("아버지 가방에 들어가신다", "nouns")
+  run()
 
 
