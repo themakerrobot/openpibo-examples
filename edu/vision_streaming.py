@@ -1,5 +1,4 @@
 import time
-
 from openpibo.edu_v1 import Pibo
 
 def run():
@@ -7,7 +6,7 @@ def run():
   time.sleep(3)
   pibo.stop_thread_camera()
 
-if __name__ == "__main__":
+if __name__ == '__main__':
   pibo = Pibo()
 
   run()

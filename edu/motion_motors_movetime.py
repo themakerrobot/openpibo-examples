@@ -1,5 +1,4 @@
 import time
-
 from openpibo.edu_v1 import Pibo
 
 def run():
@@ -9,7 +8,7 @@ def run():
     pibo.motors_movetime(positions=[0,0,-30,-20, -30,0, 0,0,-30,-20])
     time.sleep(1)
 
-if __name__ == "__main__":
+if __name__ == '__main__':
   pibo = Pibo()
 
   run()

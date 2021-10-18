@@ -8,7 +8,7 @@ def run():
   print(face)
   pibo.stop_thread_camera()
 
-if __name__ == "__main__":
+if __name__ == '__main__':
   pibo = Pibo()
 
   run()

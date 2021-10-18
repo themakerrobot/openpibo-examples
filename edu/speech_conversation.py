@@ -8,7 +8,7 @@ def run():
       break
 
     result = pibo.conversation(user_input)
-    print(f'파이보: {result["data"]}')
+    print('파이보 : {}'.format(result['data']))
 
 if __name__ == "__main__":
   pibo = Pibo()

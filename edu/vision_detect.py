@@ -1,5 +1,4 @@
 import time
-
 from openpibo.edu_v1 import Pibo
 
 def run():
@@ -8,12 +7,12 @@ def run():
   obj = pibo.search_object()
   qr = pibo.search_qr()
   text = pibo.search_text()
-  print("Search Object: ", obj)
-  print("Search QR: ", qr)
-  print("Search Text: ", text)
+  print('Search Object: ', obj)
+  print('Search QR: ', qr)
+  print('Search Text: ', text)
   pibo.stop_thread_camera()
 
-if __name__ == "__main__":
+if __name__ == '__main__':
   pibo = Pibo()
 
   run()

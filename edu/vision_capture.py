@@ -1,5 +1,4 @@
 import time
-
 from openpibo.edu_v1 import Pibo
 
 def run():
@@ -12,9 +11,9 @@ def run():
   pibo.stop_thread_camera()
 
   # Version 2. Camera off
-  pibo.capture("capture_cameraoff.png")
+  pibo.capture('capture_cameraoff.png')
 
-if __name__ == "__main__":
+if __name__ == '__main__':
   pibo = Pibo()
 
   run()

@@ -1,5 +1,4 @@
 import time
-
 from openpibo.edu_v1 import Pibo
 
 def run():
@@ -12,7 +11,7 @@ def run():
     pibo.motor(8, -30, speed=70)
     time.sleep(1)
 
-if __name__ == "__main__":
+if __name__ == '__main__':
   pibo = Pibo()
 
   run()
