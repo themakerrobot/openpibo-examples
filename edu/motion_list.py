@@ -9,9 +9,11 @@ def run():
     if user_input == 'q':
       break
 
-    result = pibo.get_motion(user_input)
-    result = result['data'] if type(result['data']) is dict else f'{user_input} is not support'
-    pprint.pprint(result)
+    ret = pibo.get_motion(user_input)
+    print('get_motion() :\n', ret)
+
+    ret = ret['data'] if type(ret['data']) is dict else f'{user_input} is not support'
+    pprint.pprint(ret)
 
 if __name__ == '__main__':
   pibo = Pibo()
