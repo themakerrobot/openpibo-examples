@@ -21,7 +21,7 @@
 
 ## 사전 학습
 
-> 예제 파일에 공통으로 들어가는 코드 및 x-openpibo 라이브러리에 정의되어 있는 함수 사용에 관한 설명입니다.
+> 예제 파일에 공통으로 들어가는 코드 및 openpibo 라이브러리에 정의되어 있는 함수 사용에 관한 설명입니다.
 
 - **import**
 
@@ -46,17 +46,19 @@
 
   ```python
   # openpibo-examples/audio/play_test.py
-  from openpibo.audio import Audio
+  import time
+  
   import openpibo
+  from openpibo.audio import Audio
 
-  def tts_f():
-    obj = Audio()  # 인스턴스 생성, obj는 Audio 클래스의 인스턴스
-    obj.play(filename=openpibo.config['DATA_PATH']+"/audio/test.mp3", out='local', volume=-2000) # '인스턴스.메서드'로 Audio 클래스의 play 호출
+  def run():
+    o = Audio()  # 인스턴스 생성, obj는 Audio 클래스의 인스턴스
+    o.play(filename=openpibo.config['DATA_PATH']+'/audio/test.mp3', out='local', volume=-2000) # '인스턴스.메서드'로 Audio 클래스의 play 호출
     time.sleep(5)
-    obj.stop()
+    o.stop()
 
-  if __name__ == "__main__":
-    tts_f()
+  if __name__ == '__main__':
+    run()
   ```
 
 - **함수의 호출** 
@@ -74,36 +76,37 @@
   아래는 Audio 클래스 및 함수 호출 예제 코드입니다.
 
   ```python
-  # x-openpibo/openpibo/audio.py
+  # openpibo/audio.py
   
   import os
   
   class Audio:
-      def play(self, filename, out='local', volume='-2000'):
-          os.system("omxplayer -o {} --vol {} {} &".format(out, volume, filename))
+      def play(self, filename, out='local', volume='-2000', background=True):
+          opt = '&' if background else ''
+          os.system(f'omxplayer -o {out} --vol {volume} {filename} {opt}')
       def stop(self):
           os.system('sudo pkill omxplayer')
   ```
 
   ```python
   # play 함수 호출
-  obj.play(filename=openpibo.config['DATA_PATH']+"/audio/test.mp3", out='local', volume=-2000) # 방법1
-  obj.play(filename=openpibo.config['DATA_PATH']+"/audio/test.mp3") # 방법2 (local, volume 기본 인자값이 있으므로 가능)
-  obj.play(openpibo.config['DATA_PATH']+"/audio/test.mp3", 'local', -2000) # 방법3 (인자의 순서가 맞기 때문에 변수명 안써도 가능)
-  obj.play(out='local', volume=-2000, openpibo.config['DATA_PATH']+"/audio/test.mp3") # 방법4 (키워드 인자의 경우 순서가 바뀌어도 가능)
+  o.play(filename=openpibo.config['DATA_PATH']+'/audio/test.mp3', out='local', volume=-2000) # 방법1
+  o.play(filename=openpibo.config['DATA_PATH']+'/audio/test.mp3') # 방법2 (local, volume 기본 인자값이 있으므로 가능)
+  o.play(openpibo.config['DATA_PATH']+'/audio/test.mp3', 'local', -2000) # 방법3 (인자의 순서가 맞기 때문에 변수명 안써도 가능)
+  o.play(out='local', volume=-2000, openpibo.config['DATA_PATH']+'/audio/test.mp3') # 방법4 (키워드 인자의 경우 순서가 바뀌어도 가능)
   ```
 
   단, 아래와 같이 키워드 인자를 활용한 뒤에 위치 인자를 활용할 수는 없습니다.
 
   ```python
-  obj.play(openpibo.config['DATA_PATH']+"/audio/test.mp3", 'local', -2000)  (X)
+  o.play(openpibo.config['DATA_PATH']+'/audio/test.mp3', 'local', -2000)  (X)
   ```
 
-- `if __name__ == "__main__"`
+- `if __name__ == '__main__'`
 
   - `__name__`: 현재 모듈의 이름을 담고 있는 내장 변수입니다.
   - 해당 프로그램을 직접 실행했을 경우, 참이 되어 main 함수를 실행합니다.
   - 다른 프로그램에서 import하여 사용할 경우, main 함수는 실행하지 않습니다.
 
 ## 참고 사항
-더 자세한 설명은 [공식 문서의 EXAMPLES 탭](https://themakerrobot.github.io/x-openpibo/build/html/examples/audio.html)를 참고하시기 바랍니다.
+더 자세한 설명은 [공식 문서의 EXAMPLES 탭](https://themakerrobot.github.io/openpibo-python/build/html/examples/audio.html)를 참고하시기 바랍니다.
