@@ -10,9 +10,9 @@ def run():
       break
 
     ret = pibo.get_motion(user_input)
-    print('get_motion() :\n', ret)
 
     ret = ret['data'] if type(ret['data']) is dict else f'{user_input} is not support'
+    print('get_motion() :')
     pprint.pprint(ret)
 
 if __name__ == '__main__':
