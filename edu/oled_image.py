@@ -3,7 +3,7 @@ import openpibo
 from openpibo.edu_v1 import Pibo
 
 def run():
-  ret = pibo.draw_image(openpibo.config['DATA_PATH']+'/image/clear.png')
+  ret = pibo.draw_image(openpibo.datapath + '/image/clear.png')
   print('draw_image() : ', ret)
   ret = pibo.show_display()
   print('show_display() : ', ret)

@@ -3,7 +3,7 @@ import openpibo
 from openpibo.edu_v1 import Pibo
 
 def run():
-  filename = openpibo.config['DATA_PATH']+'/audio/tts.mp3'
+  filename = openpibo.datapath + '/audio/tts.mp3'
   ret = pibo.tts(string='안녕, 나는 파이보야', voice_type='WOMAN_READ_CALM', break_time=500, filename=filename)
   print('tts() : ', ret)
 

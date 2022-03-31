@@ -53,7 +53,7 @@
 
   def run():
     o = Audio()  # 인스턴스 생성, obj는 Audio 클래스의 인스턴스
-    o.play(filename=openpibo.config['DATA_PATH']+'/audio/test.mp3', out='local', volume=-2000) # '인스턴스.메서드'로 Audio 클래스의 play 호출
+    o.play(filename=openpibo.datapath + '/audio/test.mp3', out='local', volume=-2000) # '인스턴스.메서드'로 Audio 클래스의 play 호출
     time.sleep(5)
     o.stop()
 
@@ -90,16 +90,16 @@
 
   ```python
   # play 함수 호출
-  o.play(filename=openpibo.config['DATA_PATH']+'/audio/test.mp3', out='local', volume=-2000) # 방법1
-  o.play(filename=openpibo.config['DATA_PATH']+'/audio/test.mp3') # 방법2 (local, volume 기본 인자값이 있으므로 가능)
-  o.play(openpibo.config['DATA_PATH']+'/audio/test.mp3', 'local', -2000) # 방법3 (인자의 순서가 맞기 때문에 변수명 안써도 가능)
-  o.play(out='local', volume=-2000, openpibo.config['DATA_PATH']+'/audio/test.mp3') # 방법4 (키워드 인자의 경우 순서가 바뀌어도 가능)
+  o.play(filename=openpibo.datapath + '/audio/test.mp3', out='local', volume=-2000) # 방법1
+  o.play(filename=openpibo.datapath + '/audio/test.mp3') # 방법2 (local, volume 기본 인자값이 있으므로 가능)
+  o.play(openpibo.datapath + '/audio/test.mp3', 'local', -2000) # 방법3 (인자의 순서가 맞기 때문에 변수명 안써도 가능)
+  o.play(out='local', volume=-2000, openpibo.datapath + '/audio/test.mp3') # 방법4 (키워드 인자의 경우 순서가 바뀌어도 가능)
   ```
 
   단, 아래와 같이 키워드 인자를 활용한 뒤에 위치 인자를 활용할 수는 없습니다.
 
   ```python
-  o.play(openpibo.config['DATA_PATH']+'/audio/test.mp3', 'local', -2000)  (X)
+  o.play(openpibo.datapath + '/audio/test.mp3', 'local', -2000)  (X)
   ```
 
 - `if __name__ == '__main__'`
@@ -107,6 +107,3 @@
   - `__name__`: 현재 모듈의 이름을 담고 있는 내장 변수입니다.
   - 해당 프로그램을 직접 실행했을 경우, 참이 되어 main 함수를 실행합니다.
   - 다른 프로그램에서 import하여 사용할 경우, main 함수는 실행하지 않습니다.
-
-## 참고 사항
-더 자세한 설명은 [공식 문서의 EXAMPLES 탭](https://themakerrobot.github.io/openpibo-python/build/html/examples/audio.html)를 참고하시기 바랍니다.

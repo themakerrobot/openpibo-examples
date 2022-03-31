@@ -7,7 +7,7 @@ def run():
   o_speech = Speech()
   o_audio = Audio()
 
-  filename = openpibo.config['DATA_PATH']+"/audio/tts.mp3"
+  filename = openpibo.datapath + "/audio/tts.mp3"
   o_speech.tts("<speak>\
               <voice name='MAN_READ_CALM'>안녕하세요. 반갑습니다.<break time='500ms'/></voice>\
             </speak>"\
