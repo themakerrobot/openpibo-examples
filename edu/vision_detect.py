@@ -8,10 +8,8 @@ def run():
 
   obj = pibo.search_object()
   qr = pibo.search_qr()
-  text = pibo.search_text()
   print('Search Object: ', obj)
   print('Search QR: ', qr)
-  print('Search Text: ', text)
   
   ret = pibo.stop_thread_camera()
   print('stop_thread_camera() : ', ret)

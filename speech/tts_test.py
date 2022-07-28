@@ -12,7 +12,7 @@ def run():
               <voice name='MAN_READ_CALM'>안녕하세요. 반갑습니다.<break time='500ms'/></voice>\
             </speak>"\
           , filename)
-  o_audio.play(filename, out='local', volume=-1500)  # 파이보 스피커로 filename 출력
+  o_audio.play(filename, volume=80)  # 파이보 스피커로 filename 출력
 
 if __name__ == "__main__":
   run()

@@ -7,7 +7,7 @@ def run():
   ret = pibo.tts(string='안녕, 나는 파이보야', voice_type='WOMAN_READ_CALM', break_time=500, filename=filename)
   print('tts() : ', ret)
 
-  ret = pibo.play_audio(filename, out='local', volume=-1500)
+  ret = pibo.play_audio(filename, volume=80)
   print('play_audio() : ', ret)
   time.sleep(2)
 

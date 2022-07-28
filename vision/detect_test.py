@@ -11,7 +11,6 @@ def run():
 
   print("Object Detect: ", o_det.detect_object(img))  # 객체 인식
   print("QR Detect:", o_det.detect_qr(img))           # QR코드 인식
-  print("Text Detect:", o_det.detect_text(img))       # 문자 인식
 
 if __name__ == "__main__":
   run()
