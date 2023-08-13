@@ -1,0 +1,1 @@
+{"blocks":{"languageVersion":0,"blocks":[{"type":"oled_draw_image","id":"xOmJJb|,?10Mre;h-ueG","x":-130,"y":-1070,"fields":{"dir":"/home/pi/openpibo-files/icon/etc/"},"inputs":{"filename":{"shadow":{"type":"text","id":"Q3jov[FfqIHeW$@I_IBI","fields":{"TEXT":"apple.jpg"}}}},"next":{"block":{"type":"oled_show","id":"5D#x[hGTA!+eL9#IsA|5"}}}]}}
