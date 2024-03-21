@@ -2,10 +2,11 @@ from openpibo.motion import Motion
 
 motion = Motion()
 
-res = motion.get_motion('forward1')
+# res = motion.get_motion('forward1')
+# for item in res['pos']:
+#   print(item['d'])
 
-print(res)
 
-for item in res['pos']:
-  print(item['d'], item['seq'])
-  
+print(motion.get_motion())
+
+motino

@@ -11,19 +11,13 @@
 '''
 from openpibo.device import Device
 
-def run():
-  o = Device()
-  _ = o.send_cmd(Device.code_list['PIR'], "on")
+device = Device()
 
-  # q를 입력할 때까지 계속해서 명령어 입력 가능
-  while True:
-    pkt = input("Input > ")
-    
-    if pkt == 'q':
-      break
+# q를 입력할 때까지 계속해서 명령어 입력 가능
+while True:
+  pkt = input("메시지를 입력하세요 > ")
 
-    result = o.send_raw(pkt)
-    print(result)
-
-if __name__ == "__main__":
-  run()
+  if pkt == '그만':
+    break
+  result = device.send_raw(pkt)
+  print(result)

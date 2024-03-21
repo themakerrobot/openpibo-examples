@@ -1,16 +1,12 @@
 import time
-
-import openpibo
 from openpibo.oled import Oled
 
-# 화면에 clear.png 이미지 5초간 표시
-def run():
-  o = Oled()
-  o.draw_image(openpibo.datapath + "/image/clear.png")  # clear.png 그리기
-  o.show()   # 화면에 표시
-  time.sleep(5) # 5초동안 프로세스 정지
-  o.clear()  # 화면 지우기
-  o.show()
+IMG_PATH = '/home/pi/openpibo-files/image'
 
-if __name__ == "__main__":
-  run()
+# 화면에 sun.jpg 이미지 5초간 표시
+oled = Oled()
+oled.draw_image(IMG_PATH + "/weather/sun.jpg") # sun.jpg 그리기
+oled.show()   # 화면에 표시
+time.sleep(5) # 5초동안 프로세스 정지
+oled.clear()  # 화면 지우기
+oled.show()

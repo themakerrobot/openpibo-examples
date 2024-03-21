@@ -12,50 +12,44 @@
 import time
 from threading import Thread
 from queue import Queue
-
 from openpibo.device import Device
 
-def decode_pkt(pkt):
-  print("Receive:", pkt)
-
-def update():
+def main_loop():
   # 현재 timestamp 얻기
-  system_check_time = time.time()
-  battery_check_time = time.time()
+  system_time = time.time()
+  battery_time = time.time()
 
   while True:
-    # que에 pkt가 존재하면 pkt를 제거하고 반환하여 Device에 메시지 전송 & decode_pkt 실행
-    if que.qsize() > 0:
-      data = o.send_raw(que.get())
-      decode_pkt(data)
+    # queue에 메시지가 존재하면 하나씩 실행
+    if queue.qsize() > 0:
+      data = device.send_raw(queue.get())
+      print("Message:", data)
 
-    if time.time() - system_check_time > 1:  # 시스템 메시지 1초 간격 전송
-      data = o.send_cmd(Device.code_list['SYSTEM'])
-      decode_pkt(data)
-      system_check_time = time.time()
+    if time.time() - system_time > 1:  # 시스템 메시지 1초 간격 전송
+      data = device.send_raw('#40:!')
+      print("System:", data)
+      system_time = time.time()
 
-    if time.time() - battery_check_time > 10: # 배터리 메시지 10초 간격 전송
-      data = o.send_cmd(Device.code_list['BATTERY'])
-      decode_pkt(data)
-      battery_check_time = time.time()
+    if time.time() - battery_time > 10: # 배터리 메시지 10초 간격 전송
+      data = device.send_raw('#15:!')
+      print("Battery:", data)
+      battery_time = time.time()
 
     time.sleep(0.01)
 
-if __name__ == "__main__":
-  o = Device()
-  que = Queue()
 
-  o.send_cmd(Device.code_list['PIR'], "on")
+device = Device()
+queue = Queue()
 
-  t = Thread(target=update, args=())
-  t.daemon = True # main thread 종료시 update 메서드 종료
-  t.start()			  # update 메서드 실행
+t = Thread(target=main_loop, args=())
+t.daemon = True # main thread 종료시 update 메서드 종료
+t.start()			  # update 메서드 실행
 
-  # main thread  
-  # 사용자가 q를 입력할 때까지 무한 반복, que에 pkt 삽입
-  while True:
-    pkt = input("")
-    if pkt == 'q':
-      break
+# main thread  
+# 사용자가 q를 입력할 때까지 무한 반복, que에 pkt 삽입
+while True:
+  message = input("메시지를 입력하세요 > ")
+  if message == '그만':
+    break
 
-    que.put(pkt)
+  queue.put(message)

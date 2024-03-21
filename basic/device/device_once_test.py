@@ -10,19 +10,12 @@
  - TOUCH(31) -> ex) #31:!
  - SYSTEM(40) -> ex) #40:!
 '''
-
-import argparse
-
 from openpibo.device import Device
 
-def run(args):
-  o = Device()
-  print('Send:', args.command)        # 실행한 명령어 출력
-  result = o.send_raw(args.command)   # Device에 메시지 전송하고 응답받음
-  print('Receive:', result)             # Device로부터 받은 응답 출력
-    
-if __name__ == "__main__":
-  parser = argparse.ArgumentParser()  # 인자값을 받을 수 있는 인스턴스 생성
-  parser.add_argument('--command', help='Raw message to send to device', required=True) # Device에 보낼 메시지
-  args = parser.parse_args()          # 명령창(터미널)에 주어진 인자를 파싱하여 args에 저장
-  run(args)                          # 입력받은 인자값을 인수로 main 함수 실행
+device = Device()
+
+command = '#20:255,0,0!'
+
+print('Send:', command)        		# 실행한 명령어 출력
+result = device.send_raw(command)   # Device에 메시지 전송하고 응답받음
+print('Receive:', result)      		# Device로부터 받은 응답 출력

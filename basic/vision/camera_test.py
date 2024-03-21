@@ -1,20 +1,13 @@
 from openpibo.vision import Camera
 
-def run(gui=False):
-  o = Camera()
+camera = Camera()
 
-  # Capture / Read file
-  # 이미지 촬영
-  img = o.read()
-  #img = cam.imread("/home/pi/test.jpg")
+# 이미지 촬영 / 파일 불러오기
+image = camera.read()
+#image = cam.imread("/home/pi/test.jpg")
 
-  # Write(test.jpg라는 이름을 촬영한 이미지 저장)
-  o.imwrite("test.jpg", img)
+# 저장(test.jpg라는 이름을 촬영한 이미지 저장)
+camera.imwrite("test.jpg", image)
 
-  if gui:
-    # display (only GUI): 3초동안 'TITLE' 이름의 윈도우 창에서 이미지 보여줌
-    o.imshow(img, "TITLE")
-    o.waitKey(3000) # 단위: ms
-
-if __name__ == "__main__":
-  run(gui=False)
+# IDE에 표시
+camera.imshow_to_ide(image)
