@@ -3,13 +3,15 @@ from openpibo.vision import Detect
 from openpibo.motion import Motion
 import time
 
+MARKER_LENGTH = 5.5
+
 camera = Camera()
 detect = Detect()
 motion = Motion()
 
 def move(l, r, intv):
   data = [
-    [10,     0, -70, -25,   0,   0,  20,    0,  70,  25],
+    [10,     0, -70, -25,   0,  10,  20,    0,  70,  25],
     [999,  999, -80, 999, 999, 999, 999, -1*l,  60, 999],
     [999, -1*r, 999, 999, 999, 999, 999,  999, 999, 999],
     [999,  999, 999, 999, 999, 999,   0,  999, 999, 999],
@@ -25,11 +27,11 @@ def move(l, r, intv):
          
 def get_dirX(x):
   if x > 420:
-    dirX = "Right"  
+    dirX = "r" # right 
   elif x < 220:
-    dirX = "Left"
+    dirX = "l" # left
   else:
-    dirX = "Center"
+    dirX = "c" # center
   return dirX
 
 def engine(data):
@@ -43,50 +45,25 @@ def engine(data):
   return dX, distance
 
 motion.set_motion('stop')
-time.sleep(2)
-
-mark = 7
 
 while True:
   print('center')
+  time.sleep(2)
   image = camera.read()
-  items = detect.marker_detect(image, 12)
+  items = detect.detect_marker(image, MARKER_LENGTH)
   camera.imshow_to_ide(items['img'])
 
   if len(items['data']) == 0:
-    print('right')
-    motion.set_motor(4, -30)
-    time.sleep(2)
-    image = camera.read()
-    items = detect.marker_detect(image, 12)
-    camera.imshow_to_ide(items['img'])
-    
-    if len(items['data']) == 0:
-      print('left')
-      motion.set_motor(4, 30)
-      time.sleep(2)
-      image = camera.read()
-      items = detect.marker_detect(image, 12)
-      camera.imshow_to_ide(items['img'])
-      if len(items['data']) == 0:
-        print("lost")
-      else: # left
-        print('move left')
-        move(30, 15, 300)
-        motion.set_motion('stop')
-    else: # right
-      print('move right')
-      move(15, 30, 300)
-      motion.set_motion('stop')
-  else: # center 
+    print("I'm lost")
+  else:
     dX, distance = engine(items['data'])
     print(f'[{mark}]: {dX} {distance}cm')
 
-    if dX == "Right":
-      move(15, 30, 300)
-    elif dX == "Left":
-      move(30, 15, 300)
+    if dX == "r":
+      move(15, 30, 250)
+    elif dX == "l":
+      move(30, 15, 250)
     else:
-      move(30, 30, 300)
+      move(35, 35, 250)
 
     motion.set_motion('stop')
