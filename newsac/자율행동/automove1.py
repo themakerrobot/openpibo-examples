@@ -4,14 +4,14 @@ from openpibo.motion import Motion
 import time
 
 MARKER_LENGTH = 5.5
-MARKER = 29
+MARKER = 28
 camera = Camera()
 detect = Detect()
 motion = Motion()
 
 def move(l, r, intv):
   data = [
-    [10,     0, -70, -25,   0,  10,  20,    0,  70,  25],
+    [10,     0, -70, -25,   0,   0,  20,    0,  70,  25],
     [999,  999, -80, 999, 999, 999, 999, -1*l,  60, 999],
     [999, -1*r, 999, 999, 999, 999, 999,  999, 999, 999],
     [999,  999, 999, 999, 999, 999,   0,  999, 999, 999],
