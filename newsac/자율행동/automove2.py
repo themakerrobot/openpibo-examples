@@ -3,6 +3,8 @@ from openpibo.vision import Detect
 from openpibo.motion import Motion
 import time
 
+MARKER_LENGTH = 5.5
+MARKER = 29
 camera = Camera()
 detect = Detect()
 motion = Motion()
@@ -36,7 +38,7 @@ def engine(data):
   distance, dX = None, None
   for item in items['data']:
     _id = item['id']
-    if _id == mark:
+    if _id == MARKER:
       distance = item['distance']
       dX = get_dirX(item['center'][0])
       break
@@ -45,13 +47,11 @@ def engine(data):
 motion.set_motion('stop')
 time.sleep(2)
 
-mark = 29
-
 while True:
   print('center')
   time.sleep(2)
   image = camera.read()
-  items = detect.detect_marker(image, 5.5)
+  items = detect.detect_marker(image, MARKER_LENGTH)
   camera.imshow_to_ide(items['img'])
 
   if len(items['data']) == 0:
@@ -59,7 +59,7 @@ while True:
     motion.set_motor(4, -30)
     time.sleep(2)
     image = camera.read()
-    items = detect.detect_marker(image, 5.5)
+    items = detect.detect_marker(image, MARKER_LENGTH)
     camera.imshow_to_ide(items['img'])
     
     if len(items['data']) == 0:
@@ -67,7 +67,7 @@ while True:
       motion.set_motor(4, 30)
       time.sleep(2)
       image = camera.read()
-      items = detect.detect_marker(image, 5.5)
+      items = detect.detect_marker(image, MARKER_LENGTH)
       camera.imshow_to_ide(items['img'])
       if len(items['data']) == 0:
         print("lost")
@@ -81,7 +81,7 @@ while True:
       motion.set_motion('stop')
   else: # center 
     dX, distance = engine(items['data'])
-    print(f'[{mark}]: {dX} {distance}cm')
+    print(f'[{MARKER}]: {dX} {distance}cm')
 
     if dX == "Right":
       move(15, 30, 250)

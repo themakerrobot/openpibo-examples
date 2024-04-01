@@ -4,7 +4,7 @@ from openpibo.motion import Motion
 import time
 
 MARKER_LENGTH = 5.5
-
+MARKER = 29
 camera = Camera()
 detect = Detect()
 motion = Motion()
@@ -38,7 +38,7 @@ def engine(data):
   distance, dX = None, None
   for item in items['data']:
     _id = item['id']
-    if _id == mark:
+    if _id == MARKER:
       distance = item['distance']
       dX = get_dirX(item['center'][0])
       break
@@ -57,7 +57,7 @@ while True:
     print("I'm lost")
   else:
     dX, distance = engine(items['data'])
-    print(f'[{mark}]: {dX} {distance}cm')
+    print(f'[{MARKER}]: {dX} {distance}cm')
 
     if dX == "r":
       move(15, 30, 250)

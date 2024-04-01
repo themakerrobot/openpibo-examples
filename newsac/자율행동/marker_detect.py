@@ -1,6 +1,7 @@
 from openpibo.vision import Camera
 from openpibo.vision import Detect
 
+MARKER_LENGTH = 5.5
 camera = Camera()
 detect = Detect()
 
@@ -22,14 +23,9 @@ def check_pos(x, y):
     dirY = "Center"
   return dirX, dirY
 
-from openpibo.motion import Motion
-motion = Motion()
-
-motion.set_motor(5, 20)
-
 while True:
   image = camera.read()
-  items = detect.marker_detect(image, 5.5)
+  items = detect.detect_marker(image, MARKER_LENGTH)
 
   camera.rectangle(image, (220, 140), (420, 340), (255,255,255), 2)
   

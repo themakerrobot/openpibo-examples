@@ -1,9 +1,10 @@
 from openpibo.vision import Camera
 
-cam = Camera()
+camera = Camera()
 
-image = cam.read()
+image = camera.read()
 
-cam.line(image, (0, 0), (640, 480), '#ff0000', 4)
+camera.line(image, (0, 0), (640, 480), '#ff0000', 4)
+camera.line(image, (640, 0), (0, 480), '#ff0000', 4)
 
-cam.imshow_to_ide(image)
+camera.imshow_to_ide(image)
