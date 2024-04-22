@@ -3,8 +3,8 @@ from openpibo.vision import Detect
 from openpibo.motion import Motion
 import time
 
-MARKER_LENGTH = 5.5
-MARKER = 29
+MARKER_LENGTH = 6
+MARKER = 2
 camera = Camera()
 detect = Detect()
 motion = Motion()
@@ -38,6 +38,7 @@ def engine(data):
   distance, dX = None, None
   for item in items['data']:
     _id = item['id']
+    print(item['id'])
     if _id == MARKER:
       distance = item['distance']
       dX = get_dirX(item['center'][0])
@@ -84,10 +85,10 @@ while True:
     print(f'[{MARKER}]: {dX} {distance}cm')
 
     if dX == "Right":
-      move(15, 30, 250)
+      move(15, 35, 250)
     elif dX == "Left":
-      move(30, 15, 250)
+      move(35, 15, 250)
     else:
-      move(35, 35, 250)
+      move(35, 35, 300)
 
     motion.set_motion('stop')
