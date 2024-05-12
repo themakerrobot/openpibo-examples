@@ -4,14 +4,14 @@ from openpibo.motion import Motion
 import time
 
 MARKER_LENGTH = 5.5
-
+MARKER = 28
 camera = Camera()
 detect = Detect()
 motion = Motion()
 
 def move(l, r, intv):
   data = [
-    [10,     0, -70, -25,   0,  10,  20,    0,  70,  25],
+    [10,     0, -70, -25,   0,   0,  20,    0,  70,  25],
     [999,  999, -80, 999, 999, 999, 999, -1*l,  60, 999],
     [999, -1*r, 999, 999, 999, 999, 999,  999, 999, 999],
     [999,  999, 999, 999, 999, 999,   0,  999, 999, 999],
@@ -38,7 +38,7 @@ def engine(data):
   distance, dX = None, None
   for item in items['data']:
     _id = item['id']
-    if _id == mark:
+    if _id == MARKER:
       distance = item['distance']
       dX = get_dirX(item['center'][0])
       break
@@ -57,7 +57,7 @@ while True:
     print("I'm lost")
   else:
     dX, distance = engine(items['data'])
-    print(f'[{mark}]: {dX} {distance}cm')
+    print(f'[{MARKER}]: {dX} {distance}cm')
 
     if dX == "r":
       move(15, 30, 250)
