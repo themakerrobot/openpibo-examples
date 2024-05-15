@@ -28,7 +28,7 @@ oled.draw_text((0,45), result['highst_temp'])
 oled.show()
 
 # 예보 음성 재생하기
-speech.tts(string=result['forecast'], filename='voice.mp3', voice='main')
+speech.tts(string=result['weather'], filename='voice.mp3', voice='main')
 audio.play('voice.mp3', 80)
 
 # 동작 실행하기
