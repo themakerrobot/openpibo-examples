@@ -4,6 +4,9 @@ from openpibo.audio import Audio
 dialog = Dialog()
 audio = Audio()
 
+# 대화 파일 교체
+#dialog.load('mydialog.csv')
+
 print('대화를 시작합니다 >>')
 while True:
   question = input('')
