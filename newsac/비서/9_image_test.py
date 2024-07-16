@@ -13,4 +13,4 @@ image = camera.putTextPIL(image, '안녕하세요.', (0, 0), 30, (0, 0, 255))
 camera.imwrite('test.jpg', image)
 
 # IDE 뷰어에 표시
-camera.imshow_to_ide(image,1)
+camera.imshow_to_ide(image, 1)

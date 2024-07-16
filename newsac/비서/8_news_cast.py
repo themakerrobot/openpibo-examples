@@ -31,5 +31,6 @@ speech.tts(string='뉴스입니다.' + result['title'], filename='voice.mp3', vo
 audio.play('voice.mp3', 80)
 
 # 동작 실행하기
-motion.set_mymotion('news')
+# motion.set_mymotion('news')
+motion.set_motion('speak1')
 motion.set_motion('stop')

@@ -32,5 +32,6 @@ speech.tts(string=result['weather'], filename='voice.mp3', voice='main')
 audio.play('voice.mp3', 80)
 
 # 동작 실행하기
-motion.set_mymotion('weather')
+# motion.set_mymotion('weather')
+motion.set_motion('speak1')
 motion.set_motion('stop')

@@ -5,7 +5,7 @@ import time
 
 MARKER_LENGTH = 8.5
 # 인식할 마커 번호 목록
-MARKER_LIST = [1, 9, 28, 29]
+MARKER_LIST = [10, 20, 21, 23]
 index = 0
 
 # 상태> '직진' or '회전'
@@ -42,8 +42,8 @@ while True:
   # '회전' 상태: 다음 마커를 찾기 위에 회전하는 상태
   if STATE == '회전':
     motion.set_motion('left')
-    motion.set_motion('stop')
 
+  motion.set_motion('stop')
   time.sleep(2)
   image = camera.read()
   items = detect.detect_marker(image, MARKER_LENGTH)
@@ -77,5 +77,3 @@ while True:
         motion.set_motion('left_half')
       elif dX == '가운데':
         motion.set_motion('forward1')
-
-      motion.set_motion('stop')

@@ -1,13 +1,9 @@
-from openpibo.vision import Camera
-from openpibo.vision import Detect
-from openpibo.vision import Face
-from openpibo.speech import Speech
-from openpibo.speech import Dialog
+from openpibo.vision import Camera, Detect, Face
+from openpibo.speech import Speech, Dialog
 from openpibo.audio import Audio
 from openpibo.oled import Oled
 from openpibo.motion import Motion
-from openpibo.collect import Weather
-from openpibo.collect import News
+from openpibo.collect import Weather, News
 from openpibo.device import Device
 import time
 
@@ -25,14 +21,17 @@ device = Device()
 
 IMAGE_DIR = '/home/pi/openpibo-files/image/'
 AUDIO_DIR = '/home/pi/openpibo-files/audio/'
-VOLUME = 30
+VOLUME = 50
 min_text = '-1'
 
 oled.set_font(size=30)
 speech.tts(string='사진 찍을게요.', filename='photo.mp3', voice='main')
 
 while True:
+  # 현재 시간 확인 2024년 7월 15일 10시 10분 5초 라면, 
+  # time_list = ['2024','07','15','10','10','5']
   time_list = time.strftime('%Y,%m,%d,%H,%M,%S').split(',')
+  print(time_list)
   
   image = camera.read()
   result = detect.detect_qr(image)

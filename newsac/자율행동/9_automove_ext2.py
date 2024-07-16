@@ -6,7 +6,7 @@ import time
 
 MARKER_LENGTH = 8.5
 # 인식할 마커 번호 목록
-MARKER_LIST = [1,2,3,4]
+MARKER_LIST = [10, 20, 21, 23]
 index = 0
 
 STATE = '직진'
@@ -42,10 +42,8 @@ while True:
   
   if STATE == '회전':
     motion.set_motion('left')
-    motion.set_motion('stop')
-  else:
-    motion.set_motion('stop')
 
+  motion.set_motion('stop')
   time.sleep(2)
   image = camera.read()
   
@@ -54,7 +52,7 @@ while True:
   score = int(max(scores)*100)
   if score > 90:
     # 카드 인식이 높은 확률(90%)로 되었을 때,
-    print(f'[카드인식]: {cardname} {int(max(scores)*100)}%') 
+    print(f'[카드인식]: {cardname} {score}%') 
 
   items = detect.detect_marker(image, MARKER_LENGTH)
   camera.imshow_to_ide(items['img'], 1)
@@ -63,8 +61,8 @@ while True:
   if dX == None or distance == None:
     if STATE != '회전':
       # 마커가 없을 때, 좌우측 머리를 돌려서 마커가 있는지 2차 확인 기능 추가
-      motion.set_motor(4, -30) # 목 오른쪽 이동
-      time.sleep(1)
+      motion.set_motor(4, -20) # 목 오른쪽 이동, 이동 범위 조절
+      time.sleep(2)
       image = camera.read()
       items = detect.detect_marker(image, MARKER_LENGTH)
       camera.imshow_to_ide(items['img'], 1)
@@ -73,8 +71,8 @@ while True:
       if dX != None and distance != None:
         motion.set_motion('right') # 머리를 우측으로 돌린 상황에서 마커가 인식되었으므로 오른쪽 회전
       else:
-        motion.set_motor(4, 30) # 목 왼쪽 이동
-        time.sleep(1)
+        motion.set_motor(4, 20) # 목 왼쪽 이동
+        time.sleep(2)
         image = camera.read()
         items = detect.detect_marker(image, MARKER_LENGTH)
         camera.imshow_to_ide(items['img'], 1)
@@ -100,8 +98,8 @@ while True:
       STATE = '직진'
     
     if dX == '오른쪽':
-      motion.set_motion('right')
+      motion.set_motion('right_half')
     elif dX == '왼쪽':
-      motion.set_motion('left')
+      motion.set_motion('left_half')
     elif dX == '가운데':
       motion.set_motion('forward1')

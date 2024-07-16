@@ -6,13 +6,11 @@ import time
 # 마커의 실제 길이 (cm) - 마커 카드의 길이 8.5cm
 MARKER_LENGTH = 8.5
 # 마커 번호
-MARKER_ID = 29
+MARKER_ID = 23
 
 camera = Camera()
 detect = Detect()
 motion = Motion()
-
-motion.set_motion('stop')
 
 # 마커 위치 반환 함수(오른쪽/왼쪽/가운데)
 def get_dirX(x):
@@ -37,9 +35,9 @@ def engine(data, _id):
   return dX, distance
 
 while True:
-  # 보행 중에 카메라(머리)가 흔들려서, 로봇이 완전히 정지하고 이미지 촬영 
+  # 보행 중에 카메라(머리)가 흔들려서, 로봇이 완전히 정지하고 이미지 촬영
+  motion.set_motion('stop')
   time.sleep(2)
-  
   image = camera.read()
   
   # 마커 인식 함수
@@ -68,4 +66,3 @@ while True:
       motion.set_motion('left_half')
     elif dX == '가운데':
       motion.set_motion('forward1')
-    motion.set_motion('stop')
