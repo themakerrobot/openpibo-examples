@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>PIBO Robot Controller</title>
+    <style>
+        @font-face {
+            font-family: "Malgun Gothic";
+            font-style: normal;
+            src: local("Malgun Gothic"), local("Dotum"), local("Gulim");
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+
+        html, body {
+            touch-action: pan-x pan-y;
+            height: 100%;
+            font-size: 10px;
+            --yellow: #f4de3d;
+            --dark-yellow: #f4d85a;
+            --light-green: #edf5e0;
+            --light-yellow: rgb(248, 242, 172);
+            --teal: #13bfd5;
+            --dark-teal: #11abbf;
+            --red: #f16449;
+            --dark-red: #d85a41;
+        }
+
+        body {
+            font-family: Helvetica, "맑은 고딕", "malgun gothic", "Apple SD Gothic Neo",
+                "Apple SD 산돌고딕 Neo", "Microsoft NeoGothic", "Droid sans", sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            font-size: 1.6rem;
+            min-height: 100vh;
+            overflow-x: hidden;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            margin: 0 auto;
+        }
+
+        .container {
+            width: 100%;
+            min-height: calc(100vh - 31px);
+            display: grid;
+            grid-template-columns: 1.5fr 2.5fr 1.5fr;
+            grid-template-rows: 1fr;
+            gap: 0;
+            background-color: #f5f5f5;
+        }
+
+        header.title {
+            color: black;
+            background-color: var(--dark-yellow);
+            cursor: default;
+            width: 100%;
+            height: 3.1rem;
+            padding-left: 16px;
+            padding-right: 16px;
+            z-index: 99;
+            box-shadow: 0 3px 3px -3px #333;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .title h2 {
+            margin: 0.1em auto;
+            font-family: Tahoma, sans-serif;
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        header, h1, h2, h3, h4, h5, h6 {
+            font-family: Helvetica, "맑은 고딕", "malgun gothic", "Apple SD Gothic Neo",
+                "Apple SD 산돌고딕 Neo", "Microsoft NeoGothic", "Droid sans", sans-serif;
+        }
+
+        .logo { 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+        }
+
+        .logo-icon {
+            font-size: 22px;
+        }
+
+        .panel {
+            background-color: #fff;
+            padding: 20px;
+            border-right: 1px solid #ddd;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .left-panel {
+            background-color: #f9f9f9;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .head-control-section {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .head-controller {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 15px;
+            background: linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%);
+            border-radius: 15px;
+            border: 2px solid #ccc;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+            cursor: crosshair;
+            overflow: hidden;
+        }
+
+        .head-cursor {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background: var(--yellow);
+            border: 3px solid #333;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            top: 50%;
+            left: 50%;
+            pointer-events: none;
+            transition: none;
+            z-index: 3;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        }
+
+        .head-axis-h {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: rgba(0,0,0,0.2);
+            pointer-events: none;
+        }
+
+        .head-axis-v {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            width: 1px;
+            height: 100%;
+            background: rgba(0,0,0,0.2);
+            pointer-events: none;
+        }
+
+        .head-values {
+            display: flex;
+            justify-content: space-around;
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .head-values span {
+            background: rgba(248, 242, 172, 0.5);
+            padding: 5px 10px;
+            border-radius: 6px;
+        }
+
+        .center-panel {
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .right-panel {
+            border-right: none;
+            padding: 20px;
+            overflow-y: auto;
+            justify-content: center;
+        }
+
+        button, .action-btn {
+            padding: 10px 15px;
+            font-size: 0.95em;
+            border: none;
+            border-radius: 6px;
+            background-color: var(--yellow);
+            color: #333;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            font-family: inherit;
+            font-weight: normal;
+        }
+
+        button:hover, .action-btn:hover {
+            transform: translateY(-1px);
+            font-weight: bold;
+            background-color: var(--dark-yellow);
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+        
+        .black-emoji {
+            color: black;
+        }
+
+        .joystick-area {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .dpad-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            gap: 15px;
+            width: 90%;
+            max-width: 280px;
+            aspect-ratio: 1/1;
+        }
+
+        .dpad-btn {
+            background-color: var(--light-yellow);
+            border: 1px solid rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+            color: #333;
+            font-size: 48px;
+            cursor: pointer;
+            transition: all 0.2s;
+            min-width: 50px;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .dpad-btn:hover {
+            background-color: var(--yellow);
+            transform: translateY(-2px);
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+            font-weight: normal;
+        }
+
+        .dpad-btn:active {
+            transform: scale(0.95);
+        }
+
+        .dpad-up { grid-column: 2; grid-row: 1; }
+        .dpad-down { grid-column: 2; grid-row: 3; }
+        .dpad-left { grid-column: 1; grid-row: 2; }
+        .dpad-right { grid-column: 3; grid-row: 2; }
+        
+        .dpad-stop {
+            grid-column: 2;
+            grid-row: 2;
+            background-color: var(--red);
+            color: #333;
+            font-size: 28px;
+            font-weight: normal;
+        }
+
+        .dpad-stop:hover {
+            background-color: var(--dark-red);
+            font-weight: normal;
+        }
+
+        select, input, textarea {
+            color: black;
+            font-weight: normal;
+            outline: none;
+            font-family: Helvetica, "맑은 고딕", "malgun gothic", "Apple SD Gothic Neo",
+                "Apple SD 산돌고딕 Neo", "Microsoft NeoGothic", "Droid sans", sans-serif;
+        }
+
+        select, input[type="color"] {
+            border-radius: 15px;
+            font-size: 16px !important;
+        }
+
+        .motion-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .motion-btn {
+            padding: 12px 8px;
+            font-size: 0.9em;
+            border: none;
+            border-radius: 6px;
+            background-color: rgba(248, 242, 172, 0.85);
+            color: #333;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+            font-weight: normal;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .motion-btn:hover {
+            background-color: var(--yellow);
+            transform: translateY(-1px);
+            font-weight: bold;
+        }
+
+        .motion-category {
+            margin-bottom: 20px;
+        }
+
+        .motion-category h3 {
+            font-size: 1em;
+            font-weight: bold;
+            color: #444;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .video-container {
+            width: 100%;
+            aspect-ratio: 4/3;
+            background: #000;
+            border-radius: 6px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .video-stream {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .video-overlay {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            background: rgba(255, 0, 0, 0.8);
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            color: white;
+        }
+
+        .rec-dot {
+            width: 8px;
+            height: 8px;
+            background: #fff;
+            border-radius: 50%;
+            animation: blink 1.5s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        .led-control {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            width: 100%;
+        }
+
+        .eye-control {
+            flex: 1;
+            text-align: center;
+        }
+
+        .eye-label {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .color-picker-wrapper {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            margin: 0 auto;
+        }
+
+        .color-picker {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: transform 0.3s;
+            padding: 0;
+            background-color: transparent;
+        }
+
+        .color-picker::-webkit-color-swatch-wrapper {
+            padding: 0;
+        }
+
+        .color-picker::-webkit-color-swatch {
+            border-radius: 50%;
+            border: none;
+        }
+        
+        .color-picker::-moz-color-swatch {
+            border-radius: 50%;
+            border: none;
+        }
+
+        .color-picker:hover {
+            transform: scale(1.1);
+        }
+
+        .apply-colors-btn {
+            background-color: var(--teal);
+            color: #333;
+        }
+
+        .apply-colors-btn:hover {
+            background-color: var(--dark-teal);
+            font-weight: bold;
+        }
+
+        body::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+
+        body::-webkit-scrollbar-track {
+            border-radius: 3px;
+            margin: 3px;
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+
+        body::-webkit-scrollbar-thumb {
+            border-radius: 3px;
+            background-color: rgba(0, 0, 0, 0.2);
+        }
+
+        body::-webkit-scrollbar-thumb:hover {
+            border-radius: 3px;
+            background-color: rgba(0, 0, 0, 0.3);
+        }
+
+        @media (max-width: 1024px) {
+            .container {
+                grid-template-columns: 1.3fr 2fr 1.3fr;
+            }
+            .dpad-grid {
+                gap: 12px;
+                max-width: 250px;
+            }
+            .panel {
+                padding: 15px;
+            }
+            .color-picker-wrapper {
+                width: 90px;
+                height: 90px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                -webkit-text-size-adjust: 100%;
+            }
+            .container {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto auto auto;
+                min-height: calc(100vh - 31px);
+            }
+            .panel {
+                max-height: none;
+                border-right: none;
+                border-bottom: 1px solid #ddd;
+                overflow-y: visible;
+                justify-content: flex-start;
+            }
+            .right-panel {
+                border-bottom: none;
+            }
+            header.title {
+                padding: 0 15px;
+            }
+            .head-controller {
+                width: 160px;
+                height: 160px;
+            }
+            .dpad-grid {
+                gap: 12px;
+                max-width: 260px;
+            }
+            .dpad-btn {
+                font-size: 28px;
+                min-width: 70px;
+                min-height: 70px;
+            }
+            .dpad-stop {
+                font-size: 24px;
+            }
+            .left-panel .led-control {
+                flex-direction: row;
+                gap: 15px;
+            }
+            .color-picker-wrapper {
+                width: 80px;
+                height: 80px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo h2 {
+                font-size: 1.8rem;
+            }
+            .left-panel {
+                padding: 15px;
+            }
+            .head-controller {
+                width: 140px;
+                height: 140px;
+            }
+            .head-cursor {
+                width: 25px;
+                height: 25px;
+            }
+            .dpad-grid {
+                gap: 10px;
+                max-width: 220px;
+            }
+            .dpad-btn {
+                font-size: 24px;
+                min-width: 60px;
+                min-height: 60px;
+            }
+            .dpad-stop {
+                font-size: 20px;
+            }
+            .color-picker-wrapper {
+                width: 70px;
+                height: 70px;
+            }
+            .eye-label {
+                font-size: 12px;
+            }
+            button, .motion-btn, .action-btn {
+                padding: 8px 12px;
+                font-size: 14px;
+            }
+            .panel {
+                overflow-y: visible;
+            }
+            .motion-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 360px) {
+            .container {
+                gap: 0;
+            }
+            .panel {
+                padding: 12px;
+                overflow-y: visible;
+            }
+            .head-controller {
+                width: 120px;
+                height: 120px;
+            }
+            .head-cursor {
+                width: 20px;
+                height: 20px;
+            }
+            .head-values {
+                font-size: 0.8em;
+            }
+            .dpad-grid {
+                gap: 8px;
+                max-width: 190px;
+            }
+            .dpad-btn {
+                font-size: 20px;
+                min-width: 50px;
+                min-height: 50px;
+            }
+            .dpad-stop {
+                font-size: 18px;
+            }
+            .color-picker-wrapper {
+                width: 60px;
+                height: 60px;
+            }
+            .eye-label {
+                font-size: 11px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="title">
+        <div style="float:left">
+            <h2>
+                <span class="logo-icon black-emoji">🤖️</span> PIBO Controller
+            </h2>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- 왼쪽 패널: 움직임 제어 -->
+        <div class="panel left-panel">
+            <div class="led-control">
+                <div class="eye-control">
+                    <div class="eye-label">L</div>
+                    <div class="color-picker-wrapper">
+                        <input type="color" class="color-picker" id="leftEye" value="#000000">
+                    </div>
+                </div>
+                <div class="eye-control">
+                    <div class="eye-label">R</div>
+                    <div class="color-picker-wrapper">
+                        <input type="color" class="color-picker" id="rightEye" value="#000000">
+                    </div>
+                </div>
+            </div>
+            <div class="head-control-section">
+                <div class="head-controller" id="headController">
+                    <div class="head-cursor" id="headCursor"></div>
+                    <div class="head-axis-h"></div>
+                    <div class="head-axis-v"></div>
+                </div>
+                <div class="head-values">
+                    <span>좌우: <span id="hValue">0</span>°</span>
+                    <span>상하: <span id="vValue">0</span>°</span>
+                </div>
+            </div>
+            <div class="joystick-area">
+                <div class="dpad-grid">
+                    <button class="dpad-btn dpad-up" onclick="runMotion('forward1')">↑</button>
+                    <button class="dpad-btn dpad-left" onclick="runMotion('left')">←</button>
+                    <button class="dpad-btn dpad-stop" onclick="runMotion('stop')">■</button>
+                    <button class="dpad-btn dpad-right" onclick="runMotion('right')">→</button>
+                    <button class="dpad-btn dpad-down" onclick="runMotion('backward1')">↓</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 중앙 패널: 카메라 뷰어 -->
+        <div class="panel center-panel">
+            <div class="video-container">
+                <img class="video-stream" id="videoStream" src="/vision/stream" alt="Robot Camera">
+                <div class="video-overlay">
+                    <div class="rec-dot"></div>
+                    <span>LIVE</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 오른쪽 패널: 모션 -->
+        <div class="panel right-panel">
+            <div>
+                <div class="motion-category">
+                    <h3>🎉 표현</h3>
+                    <div class="motion-grid">
+                        <button class="motion-btn" onclick="runMotion('cheer1')">격려1</button>
+                        <button class="motion-btn" onclick="runMotion('cheer2')">격려2</button>
+                        <button class="motion-btn" onclick="runMotion('clapping1')">박수</button>
+                        <button class="motion-btn" onclick="runMotion('think1')">생각</button>
+                        <button class="motion-btn" onclick="runMotion('speak1')">말하기1</button>
+                        <button class="motion-btn" onclick="runMotion('speak2')">말하기2</button>
+                    </div>
+                </div>
+                
+                <div class="motion-category">
+                    <h3>👋 인사</h3>
+                    <div class="motion-grid">
+                        <button class="motion-btn" onclick="runMotion('wave1')">흔들기</button>
+                        <button class="motion-btn" onclick="runMotion('greeting')">인사</button>
+                        <button class="motion-btn" onclick="runMotion('welcome')">환영</button>
+                        <button class="motion-btn" onclick="runMotion('handshaking')">악수</button>
+                    </div>
+                </div>
+                
+                <div class="motion-category">
+                    <h3>💃 댄스</h3>
+                    <div class="motion-grid">
+                        <button class="motion-btn" onclick="runMotion('dance1')">댄스1</button>
+                        <button class="motion-btn" onclick="runMotion('dance2')">댄스2</button>
+                        <button class="motion-btn" onclick="runMotion('dance3')">댄스3</button>
+                        <button class="motion-btn" onclick="runMotion('dance4')">댄스4</button>
+                        <button class="motion-btn" onclick="runMotion('dance5')">댄스5</button>
+                        <button class="motion-btn" onclick="runMotion('spin_h')">빙글빙글</button>
+                    </div>
+                </div>
+                
+                <div class="motion-category">
+                    <h3>🔄 머리동작</h3>
+                    <div class="motion-grid">
+                        <button class="motion-btn" onclick="runMotion('yes_h')">끄덕</button>
+                        <button class="motion-btn" onclick="runMotion('no_h')">고개젓기</button>
+                        <button class="motion-btn" onclick="runMotion('head_h')">고개돌리기</button>
+                    </div>
+                </div>
+                
+                <div class="motion-category">
+                    <h3>👣 기타</h3>
+                    <div class="motion-grid">
+                        <button class="motion-btn" onclick="runMotion('wake_up3')">일어나기</button>
+                        <button class="motion-btn" onclick="runMotion('hand1')">손동작</button>
+                        <button class="motion-btn" onclick="runMotion('step1')">발걸음</button>
+                        <button class="motion-btn" onclick="runMotion('foot1')">발동작</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let headPositions = {
+            horizontal: 0,  // 4번 모터 (좌우)
+            vertical: 0     // 5번 모터 (위아래)
+        };
+
+        // 머리 컨트롤러 및 LED 초기화
+        document.addEventListener('DOMContentLoaded', function() {
+            const controller = document.getElementById('headController');
+            const cursor = document.getElementById('headCursor');
+            let isDragging = false;
+
+            function updateHeadPosition(e) {
+                const rect = controller.getBoundingClientRect();
+                let x, y;
+
+                if (e.touches) {
+                    x = e.touches[0].clientX - rect.left;
+                    y = e.touches[0].clientY - rect.top;
+                } else {
+                    x = e.clientX - rect.left;
+                    y = e.clientY - rect.top;
+                }
+
+                // 경계 제한
+                x = Math.max(0, Math.min(rect.width, x));
+                y = Math.max(0, Math.min(rect.height, y));
+
+                // 픽셀을 각도로 변환 (좌우, 상하 값 조정)
+                const horizontalAngle = Math.round(((1 - x / rect.width) - 0.5) * 80); // 좌: +40, 우: -40
+                const verticalAngle = Math.round(((y / rect.height) - 0.5) * 30); // 위: -15, 아래: +15
+
+                // 커서 위치 업데이트
+                cursor.style.left = x + 'px';
+                cursor.style.top = y + 'px';
+
+                // 값 표시 업데이트
+                document.getElementById('hValue').textContent = horizontalAngle;
+                document.getElementById('vValue').textContent = verticalAngle;
+
+                // 모터 위치 설정
+                if (Math.abs(horizontalAngle - headPositions.horizontal) > 2 || 
+                    Math.abs(verticalAngle - headPositions.vertical) > 1) {
+                    headPositions.horizontal = horizontalAngle;
+                    headPositions.vertical = verticalAngle;
+                    setMotor(4, horizontalAngle);
+                    setTimeout(() => setMotor(5, verticalAngle), 50);
+                }
+            }
+
+            function startDrag(e) {
+                isDragging = true;
+                updateHeadPosition(e);
+                e.preventDefault();
+            }
+
+            function drag(e) {
+                if (!isDragging) return;
+                updateHeadPosition(e);
+                e.preventDefault();
+            }
+
+            function stopDrag() {
+                isDragging = false;
+            }
+
+            // 마우스 이벤트
+            controller.addEventListener('mousedown', startDrag);
+            document.addEventListener('mousemove', drag);
+            document.addEventListener('mouseup', stopDrag);
+
+            // 터치 이벤트
+            controller.addEventListener('touchstart', startDrag);
+            document.addEventListener('touchmove', drag);
+            document.addEventListener('touchend', stopDrag);
+
+            // 더블클릭으로 중앙 리셋
+            controller.addEventListener('dblclick', function() {
+                cursor.style.left = '50%';
+                cursor.style.top = '50%';
+                document.getElementById('hValue').textContent = '0';
+                document.getElementById('vValue').textContent = '0';
+                headPositions.horizontal = 0;
+                headPositions.vertical = 0;
+                setMotor(4, 0);
+                setTimeout(() => setMotor(5, 0), 50);
+            });
+            
+            // LED 색상 변경 이벤트 리스너
+            document.getElementById('leftEye').addEventListener('change', applyEyeColors);
+            document.getElementById('rightEye').addEventListener('change', applyEyeColors);
+        });
+
+        // 모터 제어 API 호출
+        async function setMotor(motorNumber, position) {
+            try {
+                const response = await fetch('/motion/set_motor', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ n: motorNumber, pos: position })
+                });
+                if (!response.ok) console.error('Motor API Error:', await response.text());
+            } catch (error) { 
+                console.error('Motor Fetch Error:', error); 
+            }
+        }
+
+        // API 호출 함수
+        async function callApi(endpoint, body) {
+            try {
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body)
+                });
+                if (!response.ok) console.error('API Error:', await response.text());
+            } catch (error) { console.error('Fetch Error:', error); }
+        }
+
+        function runMotion(name) { callApi('/motion/move', { name }); }
+
+        // LED 색상 적용
+        function applyEyeColors() {
+            const leftColor = document.getElementById('leftEye').value;
+            const rightColor = document.getElementById('rightEye').value;
+            
+            function hexToRgb(hex) {
+                const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+                return result ? [parseInt(result[1], 16), parseInt(result[2], 16), parseInt(result[3], 16)] : [0, 0, 0];
+            }
+            
+            const colors = [...hexToRgb(leftColor), ...hexToRgb(rightColor)];
+            callApi('/device/neopixel', { colors });
+        }
+
+        // 비디오 스트림 에러 처리
+        document.getElementById('videoStream').onerror = function() {
+            this.alt = '카메라 연결 대기 중...';
+            this.style.objectFit = 'contain';
+            this.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 24 24' fill='none' stroke='%23555' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z'/%3E%3Ccircle cx='12' cy='13' r='3'/%3E%3C/svg%3E";
+        };
+    </script>
+</body>
+</html>
