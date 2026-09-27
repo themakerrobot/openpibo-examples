@@ -24,8 +24,8 @@ python 예제는 아직 없습니다.
 
 `device_pibrain_button`의 SW1~SW3은 BCM 4 / 17 / 27입니다. 260624v1 `DeviceByPiBrain`은 내부 풀업을 걸고 LOW일 때 `on`을 돌려줍니다.
 
-> **회로 확인 필요**: 구 블록(`device_hat_button`)은 내부 풀다운을 걸고 HIGH일 때 `on`으로 처리했습니다.
-> 같은 보드에서 둘 다 맞을 수는 없으므로, 보드 회로도에서 SW1~SW3이 GND 쪽으로 닫히는지 확인해 주세요.
+이 폴더의 버튼 예제는 260624v1 공식 예제(`openpibo-os.pibrain/examples/device.json`), 보드 테스트(`test/test.py`)와 같은 `DeviceByPiBrain.get_button()`을 씁니다.
+구 블록 `device_hat_button`은 내부 풀다운 + HIGH일 때 `on`이었으므로, 260624v1 이전 IDE용 버튼 예제를 가져올 때는 `device_pibrain_button`으로 바꿔야 합니다.
 
 ## 주의
 
