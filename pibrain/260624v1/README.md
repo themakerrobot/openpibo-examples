@@ -15,6 +15,7 @@
 | `vision_analyze_pose` 입력 `val` | `v` |
 | `vision_face_landmark(img)` 결과의 `data`/`img` | `vision_face_landmark(img, 첫 번째 얼굴 박스)` + `vision_face_landmark_vis` |
 | `vision_flip` | 없음 → 원본 이미지 사용 (`personal-trainer/ex_camera.json`, 좌우반전 화면이 아님) |
+| 최상위에 놓인 블록 (시작 블록 없음) | `flag_event`(시작 깃발) 하나 아래로 연결. 260624v1 IDE는 시작 블록 밖의 블록을 실행하지 않음 (`openpibo-os.pibrain/examples`와 같은 구조) |
 
 > **버튼 회로 확인 필요**: 구 블록은 내부 풀다운 + HIGH일 때 눌림, 260624v1 `DeviceByPiBrain`은 내부 풀업 + LOW일 때 눌림으로 처리합니다.
 > 같은 보드에서 둘 다 맞을 수는 없으므로, 현재 piBrain 보드의 SW1~SW3 회로(GND 쪽으로 눌리는지)를 회로도로 확인해 주세요.

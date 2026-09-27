@@ -4,7 +4,8 @@
 
 기기 없이 확인할 수 있는 것만 본다.
   - python: openpibo 모듈/클래스/함수 import, 생성자·메서드 존재 여부, 위치 인자 개수
-  - block : 블록 타입 정의 여부, 파이썬 생성기 유무, 필드 이름, 고정 드롭다운 값, 입력 이름, 빈 입력
+  - block : 블록 타입 정의 여부, 파이썬 생성기 유무, 필드 이름, 고정 드롭다운 값, 입력 이름, 빈 입력,
+             flag_event 밖 최상위 블록
 실행 결과(카메라·서보·음성 동작)는 실기기에서 따로 확인해야 한다.
 
 사용:
@@ -221,9 +222,17 @@ def check_block(path, defs):
     if not (isinstance(data, dict) and isinstance(data.get("blocks"), dict)):
         return None, None  # 블록 파일 아님 (모션 DB 등)
     blocks = []
-    for b in data["blocks"].get("blocks", []):
+    roots = data["blocks"].get("blocks", [])
+    for b in roots:
         walk_blocks(b, blocks)
     issues = defaultdict(int)
+    # disable-top-blocks.js: flag_event·함수 정의 밖의 최상위 문장 블록은 비활성화되어 실행되지 않는다
+    if "flag_event" in defs:
+        for b in roots:
+            if b.get("type") not in ("flag_event", "procedures_defnoreturn", "procedures_defreturn"):
+                issues[f"최상위 블록 `{b.get('type')}` 이 flag_event 밖에 있음 (실행 안 됨)"] += 1
+        if sum(b.get("type") == "flag_event" for b in roots) > 1:
+            issues["flag_event 가 2개 이상 (IDE 가 1개만 남김)"] += 1
     for b in blocks:
         t = b.get("type")
         d = defs.get(t)

@@ -2,7 +2,7 @@
 
 - 기준: openpibo-os 태그 `260624v1`, openpibo `0.9.3.3.1`
 - 방법: 정적 검사 (`tools/compat/check_compat.py`). **실기기 동작 확인은 별도.**
-- 결과: 188개 중 OK 182 / FAIL 6
+- 결과: 188개 중 OK 188 / FAIL 0
 
 | 파일 | 종류 | 결과 | 문제 |
 |---|---|---|---|
@@ -22,7 +22,7 @@
 | `block/automove/2_intro.json` | block | OK |  |
 | `block/automove/3_dance.json` | block | OK |  |
 | `block/automove/4_image_test.json` | block | OK |  |
-| `block/automove/5_predict_tm.json` | block | FAIL | 블록 `vision_load_tm` 정의 없음<br>블록 `vision_predict_tm` 정의 없음 |
+| `block/automove/5_predict_tm.json` | block | OK |  |
 | `block/automove/6_detect_marker.json` | block | OK |  |
 | `block/automove/7_automove.json` | block | OK |  |
 | `block/automove/8_automove_ext.json` | block | OK |  |
@@ -47,11 +47,11 @@
 | `block/basics/p_utils.json` | block | OK |  |
 | `block/basics/p_vision1.json` | block | OK |  |
 | `block/basics/p_vision2.json` | block | OK |  |
-| `block/basics/p_vision3.json` | block | FAIL | 블록 `vision_load_tm` 정의 없음<br>블록 `vision_predict_tm` 정의 없음 |
+| `block/basics/p_vision3.json` | block | OK |  |
 | `block/basics/p_voice.json` | block | OK |  |
 | `block/botcard/bc_qr.json` | block | OK |  |
 | `block/botcard/bc_qr_ext.json` | block | OK |  |
-| `block/botcard/bc_tm.json` | block | FAIL | 블록 `vision_load_tm` 정의 없음<br>블록 `vision_predict_tm` 정의 없음 |
+| `block/botcard/bc_tm.json` | block | OK |  |
 | `block/examples/audio.json` | block | OK |  |
 | `block/examples/b_color.json` | block | OK |  |
 | `block/examples/b_function.json` | block | OK |  |
@@ -82,8 +82,8 @@
 | `block/examples/ex_oled_1.json` | block | OK |  |
 | `block/examples/ex_oled_2.json` | block | OK |  |
 | `block/examples/ex_pir.json` | block | OK |  |
-| `block/examples/ex_project.json` | block | FAIL | 블록 `vision_load_tm` 정의 없음<br>블록 `vision_predict_tm` 정의 없음 |
-| `block/examples/ex_tm.json` | block | FAIL | 블록 `vision_load_tm` 정의 없음<br>블록 `vision_predict_tm` 정의 없음 |
+| `block/examples/ex_project.json` | block | OK |  |
+| `block/examples/ex_tm.json` | block | OK |  |
 | `block/examples/ex_touch.json` | block | OK |  |
 | `block/examples/motion.json` | block | OK |  |
 | `block/examples/oled.json` | block | OK |  |
@@ -109,7 +109,7 @@
 | `block/sign-language/oled_figure.json` | block | OK |  |
 | `block/sign-language/oled_img.json` | block | OK |  |
 | `block/sign-language/oled_text.json` | block | OK |  |
-| `block/sign-language/result.json` | block | FAIL | 블록 `vision_load_tm` 정의 없음<br>블록 `vision_predict_tm` 정의 없음 |
+| `block/sign-language/result.json` | block | OK |  |
 | `block/sign-language/tts.json` | block | OK |  |
 | `project/assistant-bot/main.py` | python | OK |  |
 | `project/automove-bot/detect_marker.py` | python | OK |  |

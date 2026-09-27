@@ -17,8 +17,14 @@
   결과 딕셔너리 {"data", "img"} 를 돌려주던 블록 (vision_marker_detect, vision_pose, vision_face_landmark):
     X = 블록(img=이미지) 뒤에 *_vis(이미지, X) 를 넣고, get(X,'data') -> X, get(X,'img') -> 이미지
   vision_face_landmark(img)              -> vision_face_landmark(img, 첫 번째 얼굴 박스)   얼굴이 없으면 실행 중 에러
+  최상위 문장 스택                        -> flag_event 하나 아래로 연결
+    260624v1 IDE(disable-top-blocks.js)는 flag_event·함수 정의 밖의 최상위 문장 블록을 비활성화해 코드로 만들지 않는다.
+    flag_event 는 작업공간에 하나만 허용되므로, 구 IDE 실행 순서(y + sin(3°)·x 정렬)대로 스택을 이어 붙인다.
 
-바꾸지 않는 것: vision_load_tm / vision_predict_tm (260624v1 에 대응 블록 없음. 파일 목록만 출력)
+  vision_load_tm(dir, modelpath, labelpath) -> vision_load_cf('/home/pi/mymodel/', 'model.keras', 'labels.txt')
+  vision_predict_tm(img)                 -> vision_predict_cf(img)              둘 다 cf.predict(img)[0] = 클래스 이름
+    260624v1 은 TM 블록을 주석 처리했고, 기기 내장 Classifier(openpibo-os/classifier)가
+    /home/pi/mymodel/model.keras, labels.txt 를 만든다. TM .tflite 모델은 cf 블록에서 쓸 수 없다.
 
 사용: python3 tools/compat/migrate_blocks_260624v1.py <json 파일 또는 폴더>...
 """
@@ -29,7 +35,7 @@ import string
 import sys
 
 HAT_TO_SW = {"4": "1", "17": "2", "27": "3"}
-UNSUPPORTED = {"vision_load_tm", "vision_predict_tm"}
+UNSUPPORTED = set()
 _ID_CHARS = string.ascii_letters + string.digits + "!#$%()*+,-./:;=?@[]^_`{|}~"
 
 
@@ -138,6 +144,15 @@ def convert(b, boxes, notes, skip=frozenset()):
         b["type"] = "vision_imshow_to_ide"
     elif t == "vision_face":
         b["type"] = "vision_face_detect"
+    elif t == "vision_load_tm":
+        b["type"] = "vision_load_cf"
+        b.setdefault("fields", {})["dir"] = "/home/pi/mymodel/"
+        for name, val in (("modelpath", "model.keras"), ("labelpath", "labels.txt")):
+            ins[name] = text(val)
+        b["inputs"] = ins
+        notes.add("TM 블록 -> Classifier 블록 (/home/pi/mymodel/model.keras)")
+    elif t == "vision_predict_tm":
+        b["type"] = "vision_predict_cf"
     elif t == "vision_classification":
         b["type"] = "vision_object"
     elif t == "device_eye_off":
@@ -262,6 +277,37 @@ def fix_results(roots, notes):
     return roots
 
 
+HATS = {"flag_event", "procedures_defnoreturn", "procedures_defreturn"}
+
+
+def last_in_stack(b):
+    while b.get("next") and isinstance(b["next"].get("block"), dict):
+        b = b["next"]["block"]
+    return b
+
+
+def wrap_flag(roots, notes):
+    """flag_event 밖에 있는 최상위 문장 스택을 flag_event 하나 아래로 옮긴다."""
+    if any(r.get("type") == "flag_event" for r in roots):
+        return roots
+    stacks = [r for r in roots if r.get("type") not in HATS]
+    if not stacks:
+        return roots
+    # Blockly getTopBlocks(ordered=true) 와 같은 순서: y + sin(3°)·x
+    off = 0.05233595624294383
+    stacks.sort(key=lambda r: r.get("y", 0) + off * r.get("x", 0))
+    first = stacks[0]
+    flag = {"type": "flag_event", "id": new_id(), "x": first.get("x", 0), "y": first.get("y", 0) - 60}
+    tail = flag
+    for st in stacks:
+        st.pop("x", None)
+        st.pop("y", None)
+        tail["next"] = {"block": st}
+        tail = last_in_stack(st)
+    notes.add("최상위 블록을 flag_event 아래로 연결" + (f" (스택 {len(stacks)}개 이어 붙임)" if len(stacks) > 1 else ""))
+    return [flag] + [r for r in roots if r.get("type") in HATS]
+
+
 def migrate(path):
     data = json.load(open(path, encoding="utf-8"))
     if not (isinstance(data, dict) and isinstance(data.get("blocks"), dict)):
@@ -273,7 +319,7 @@ def migrate(path):
     notes = set()
     before = json.dumps(data, ensure_ascii=False, separators=(",", ":"))
     roots = [convert(r, boxes, notes) for r in roots]
-    data["blocks"]["blocks"] = fix_results(roots, notes)
+    data["blocks"]["blocks"] = wrap_flag(fix_results(roots, notes), notes)
     after = json.dumps(data, ensure_ascii=False, separators=(",", ":"))
     if after != before:
         open(path, "w", encoding="utf-8").write(after)

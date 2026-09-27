@@ -33,14 +33,11 @@
 | `vision_analyze_pose` 입력 `val` | `v` |
 | `vision_marker_detect` / `vision_pose` / `vision_face_landmark` 결과의 `data` / `img` | 결과 리스트 그대로 / `*_vis` 블록으로 원본 이미지에 그림 |
 | `vision_face_landmark(img)` | `vision_face_landmark(img, 첫 번째 얼굴 박스)` — 얼굴이 없으면 실행 중 에러 |
-| `vision_load_tm` / `vision_predict_tm` | **260624v1에 없음** — 아래 "미해결" 참고 |
+| `vision_load_tm` / `vision_predict_tm` | `vision_load_cf('/home/pi/mymodel/', 'model.keras', 'labels.txt')` / `vision_predict_cf` |
+| 최상위에 놓인 블록 (시작 블록 없음) | `flag_event`(시작 깃발) 하나 아래로 연결 |
 
-## 미해결
-
-- Teachable Machine 블록 예제 6개 (`block/automove/5_predict_tm.json`, `block/basics/p_vision3.json`, `block/botcard/bc_tm.json`, `block/examples/ex_project.json`, `block/examples/ex_tm.json`, `block/sign-language/result.json`)
-  - 260624v1 IDE에서 `vision_load_tm`/`vision_predict_tm`이 주석 처리되어 IDE에서 열리지 않습니다.
-  - 대체 블록 `vision_load_cf`/`vision_predict_cf`는 기기 내장 Classifier에서 만든 `model.keras` 전용이라 TM `.tflite` 모델(`assets/botcard`, `assets/models/tm-sample`)은 쓸 수 없습니다.
-  - Python의 `TeachableMachine`(`openpibo.vision_classify`)은 260624v1에도 있어 `python/automove/5_predict_tm.py` 등은 그대로 동작합니다.
+- **`flag_event`**: 260624v1 IDE는 `flag_event`·함수 정의 밖의 최상위 블록을 비활성화해서 실행하지 않습니다(`disable-top-blocks.js`). `flag_event`는 작업공간에 하나만 둘 수 있어, 구 IDE 실행 순서대로 스택을 이어 붙였습니다. 260624v1 공식 예제(`openpibo-os.pibo/examples`)와 같은 구조입니다.
+- **Teachable Machine → Classifier**: 260624v1 IDE는 TM 블록을 뺐습니다. 기기 내장 Classifier(Tools)가 만든 `/home/pi/mymodel/model.keras`, `labels.txt`를 씁니다. 블록 예제를 돌리기 전에 Classifier로 같은 클래스 이름의 모델을 만들어야 합니다. TM `.tflite` 모델(`assets/botcard`, `assets/models/tm-sample`)은 Python `TeachableMachine`(`openpibo.vision_classify`) 예제에서만 씁니다.
 
 ## python/
 
