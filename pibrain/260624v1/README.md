@@ -1,7 +1,9 @@
 # piBrain — 260624v1
 
-> 이 폴더의 예제는 260624v1 이미지 이전에 작성된 것을 옮겨온 것입니다. **실기기 검증 필요.**
-> 여기에 있는 블록 예제는 모두 `device_hat_button`(piBrain 버튼 SW1=BCM4, SW2=BCM17, SW3=BCM27, openpibo 블록 가이드 기준)을 사용하고, motion/audio/speech는 사용하지 않습니다.
+> 이 폴더의 예제는 260624v1 이전 IDE에서 작성된 것을 옮겨온 것입니다.
+> 260624v1(openpibo-os.pibrain 태그 `260624v1`, openpibo `0.9.3.3.1`) 기준 정적 검사 결과는 [COMPAT.md](COMPAT.md)에 있습니다.
+> **실기기 동작 확인은 아직 하지 않았습니다.**
+> 버튼 블록 `device_hat_button`은 260624v1에서 `device_pibrain_button`으로 바뀌었습니다.
 
 ## block/
 

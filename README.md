@@ -24,6 +24,18 @@ openpibo-examples/
 - 버전 폴더를 추가할 때 git 태그 `pibo-<버전>`, `pibrain-<버전>`을 함께 찍습니다.
 - 두 버전 이상에서 공통으로 쓰는 파일(모델, 마커 이미지 등)은 `assets/`에 한 벌만 둡니다.
 
+## 호환성 검사
+
+새 버전 폴더를 만들 때 그 버전의 openpibo-os 태그를 받아 정적 검사를 돌리고, 결과를 `COMPAT.md`로 남깁니다.
+openpibo 라이브러리는 openpibo-os 저장소 안의 것을 기준으로 합니다. 구 `openpibo-python` 저장소는 쓰지 않습니다.
+
+```bash
+git clone --depth 1 --branch 260624v1 https://github.com/themakerrobot/openpibo-os.pibo /tmp/os-pibo
+python3 tools/compat/check_compat.py --os /tmp/os-pibo --examples pibo/260624v1 --report pibo/260624v1/COMPAT.md
+```
+
+정적 검사는 import, 메서드, 인자 개수, 블록 정의만 확인합니다. 반환값 형식이 바뀐 것이나 실제 하드웨어 동작은 실기기에서 확인해야 합니다. Python 3와 node가 필요합니다.
+
 ## 기기별 README
 
 - [pibo/260624v1](pibo/260624v1/README.md)

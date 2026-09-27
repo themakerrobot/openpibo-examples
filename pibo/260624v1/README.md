@@ -1,7 +1,8 @@
 # Pibo — 260624v1
 
-> 이 폴더의 예제는 openpibo 0.9.2.x(2024~2025) 기준으로 작성된 것을 옮겨온 것입니다.
-> **260624v1 이미지 실기기 검증은 아직 완료되지 않았습니다.** 검증한 항목은 아래 표에 표시합니다.
+> 이 폴더의 예제는 구 openpibo-python 0.9.2.x(2024~2025) 기준으로 작성된 것을 옮겨온 것입니다.
+> 260624v1(openpibo-os.pibo 태그 `260624v1`, openpibo `0.9.3.3.1`) 기준 정적 검사 결과는 [COMPAT.md](COMPAT.md)에 있습니다.
+> **실기기 동작 확인은 아직 하지 않았습니다.**
 
 ## python/
 
@@ -37,8 +38,6 @@
 | `pose-avatar/` | 포즈 따라하기 (블록) | `project/` |
 | `web-controller/` | FastAPI 웹 컨트롤러 | `app/controller` |
 
-> `web-controller/main.py`는 `openpibo.vision_camera`를 import합니다. 공개된 openpibo-python(0.9.2.74)에는 이 모듈이 없습니다.
-> 260624v1 이미지의 openpibo에 이 모듈이 포함되어 있는지 **확인 필요**합니다.
 
 ## 자원 파일 경로
 
