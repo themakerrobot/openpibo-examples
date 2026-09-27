@@ -1,4 +1,4 @@
-from openpibo.vision import Camera
+from openpibo.vision_camera import Camera
 
 camera = Camera()
 

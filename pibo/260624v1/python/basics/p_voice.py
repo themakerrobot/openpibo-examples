@@ -14,5 +14,5 @@ dialog.load('/home/pi/code/mychat.csv')
 print(dialog.get_dialog('안녕'))
 print(dialog.get_dialog('반가워'))
 
-speech.tts(string='안녕하세요', filename='/home/pi/code/voice.mp3', voice='main')
+speech.tts(text='안녕하세요', filename='/home/pi/code/voice.mp3', voice='main')
 audio.play('/home/pi/code/voice.mp3', 30)

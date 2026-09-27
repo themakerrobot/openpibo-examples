@@ -1,6 +1,6 @@
-from openpibo.vision import Camera
-from openpibo.vision import Detect
-from openpibo.vision import TeachableMachine
+from openpibo.vision_camera import Camera
+from openpibo.vision_detect import Detect
+from openpibo.vision_classify import TeachableMachine
 from openpibo.motion import Motion
 import time
 
@@ -55,9 +55,10 @@ while True:
     print(f'[카드인식]: {cardname} {score}%') 
 
   items = detect.detect_marker(image, MARKER_LENGTH)
-  camera.imshow_to_ide(items['img'], 1)
+  detect.detect_marker_vis(image, items)  # 마커 테두리·번호·거리 표시
+  camera.imshow_to_ide(image, 1)
   
-  dX, distance = engine(items['data'], MARKER_LIST[index])
+  dX, distance = engine(items, MARKER_LIST[index])
   if dX == None or distance == None:
     if STATE != '회전':
       # 마커가 없을 때, 좌우측 머리를 돌려서 마커가 있는지 2차 확인 기능 추가
@@ -65,8 +66,9 @@ while True:
       time.sleep(2)
       image = camera.read()
       items = detect.detect_marker(image, MARKER_LENGTH)
-      camera.imshow_to_ide(items['img'], 1)
-      dX, distance = engine(items['data'], MARKER_LIST[index])
+      detect.detect_marker_vis(image, items)  # 마커 테두리·번호·거리 표시
+      camera.imshow_to_ide(image, 1)
+      dX, distance = engine(items, MARKER_LIST[index])
 
       if dX != None and distance != None:
         motion.set_motion('right') # 머리를 우측으로 돌린 상황에서 마커가 인식되었으므로 오른쪽 회전
@@ -75,8 +77,9 @@ while True:
         time.sleep(2)
         image = camera.read()
         items = detect.detect_marker(image, MARKER_LENGTH)
-        camera.imshow_to_ide(items['img'], 1)
-        dX, distance = engine(items['data'], MARKER_LIST[index])
+        detect.detect_marker_vis(image, items)  # 마커 테두리·번호·거리 표시
+        camera.imshow_to_ide(image, 1)
+        dX, distance = engine(items, MARKER_LIST[index])
 
         if dX != None and distance != None:
           motion.set_motion('left') # 머리를 좌측으로 돌린 상황에서 마커가 인식되었으므로 왼쪽 회전

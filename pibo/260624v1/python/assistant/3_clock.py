@@ -17,7 +17,7 @@ while True:
 
   if time_list[5] == '00': # 0초 일 때만 체크 > 분 단위
     device.eye_on(255, 0, 0, 255, 0, 0)
-    speech.tts(string=f'{time_list[3]}시 {time_list[4]}분 입니다.', filename='voice.mp3', voice='main')
+    speech.tts(text=f'{time_list[3]}시 {time_list[4]}분 입니다.', filename='voice.mp3', voice='main')
     audio.play('voice.mp3', 50)
 
   oled.draw_line((20, 25, 100, 25))

@@ -2,8 +2,8 @@
 from numbers import Number
 # openpibo 라이브러리에서 Motion, Camera, Face 클래스를 임포트합니다.
 from openpibo.motion import Motion # 로봇 모션 제어 (모터 제어)
-from openpibo.vision import Camera # 카메라 제어
-from openpibo.vision import Face   # 얼굴 감지 기능
+from openpibo.vision_camera import Camera # 카메라 제어
+from openpibo.vision_face import Face   # 얼굴 감지 기능
 import os # 운영체제 관련 기능 (이 코드에서는 사용되지 않음)
 
 # 전역 변수 초기화 (None으로 설정하여 사용 전 할당 확인 가능)
@@ -61,7 +61,7 @@ mp = 0
 while True:
   # 카메라로부터 현재 이미지를 읽어옵니다.
   image = camera.read()
-  # 읽어온 이미지에서 얼굴을 감지합니다. 결과는 감지된 얼굴 정보(x, y, 너비, 높이)의 리스트입니다.
+  # 읽어온 이미지에서 얼굴을 감지합니다. 결과는 감지된 얼굴 정보(x1, y1, x2, y2)의 리스트입니다.
   items = _face.detect_face(image)
   # 감지된 얼굴 정보를 콘솔에 출력합니다. (디버깅용)
   print(items)
@@ -74,11 +74,11 @@ while True:
   else:
     # 첫 번째로 감지된 얼굴 정보(item)를 가져옵니다. (리스트의 첫 번째 요소)
     item = items[0]
-    # 얼굴 정보(x, y, 너비 w, 높이 h)를 사용하여 얼굴의 중심 좌표(cx, cy)를 계산합니다.
-    # cx = 시작 x좌표 + 너비의 절반
-    cx = item[0] + item[2] / 2
-    # cy = 시작 y좌표 + 높이의 절반
-    cy = item[1] + item[3] / 2
+    # 얼굴 정보(x1, y1, x2, y2)를 사용하여 얼굴의 중심 좌표(cx, cy)를 계산합니다.
+    # cx = (왼쪽 x + 오른쪽 x) / 2
+    cx = (item[0] + item[2]) / 2
+    # cy = (위쪽 y + 아래쪽 y) / 2
+    cy = (item[1] + item[3]) / 2
     # 계산된 얼굴 중심 x, y 좌표를 콘솔에 출력합니다. (디버깅용)
     print(cx)
     print(cy)
@@ -91,5 +91,5 @@ while True:
   # 얼굴 중심이 이 사각형 안에 들어오도록 모터가 제어됩니다.
   image = camera.rectangle(image, (270, 190), (370, 290), '#33cc00', 5)
   # 처리된 이미지(얼굴 중심 원, 목표 영역 사각형 포함)를 IDE 미리보기 창에 표시합니다.
-  # 0.5는 프레임 간의 지연 시간(초)이 아니라, imshow_to_ide 함수의 내부 처리와 관련된 값일 수 있습니다(확인 필요). 보통은 지연 시간이 아닙니다.
+  # 두 번째 인자 0.5는 IDE로 보낼 이미지의 축소 비율입니다 (0.5 = 가로·세로 절반).
   camera.imshow_to_ide(image, 0.5)

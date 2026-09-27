@@ -18,5 +18,5 @@ oled.draw_image('/home/pi/openpibo-files/image/expression/smile.jpg')
 oled.show()
 
 # 음성으로 내 소개하기
-speech.tts(string='안녕하세요, 파이보입니다.', filename='voice.mp3', voice='main')
+speech.tts(text='안녕하세요, 파이보입니다.', filename='voice.mp3', voice='main')
 audio.play('voice.mp3', 80)

@@ -1,6 +1,6 @@
 # 필요한 openpibo 라이브러리를 임포트합니다.
-from openpibo.vision import Face   # 얼굴 감지 및 인식 기능
-from openpibo.vision import Camera # 카메라 제어
+from openpibo.vision_face import Face   # 얼굴 감지 및 인식 기능
+from openpibo.vision_camera import Camera # 카메라 제어
 
 # 에러 결과를 저장할 전역 변수 초기화 (사용 방식에 개선 여지가 있음)
 errorResult = None
@@ -37,7 +37,7 @@ _face.load_db('/home/pi/code/'+'facedb')
 while True:
   # 카메라로부터 현재 이미지를 읽어옵니다.
   image = camera.read()
-  # 읽어온 이미지에서 얼굴을 감지합니다. 결과는 감지된 얼굴 정보(x, y, w, h)의 리스트입니다.
+  # 읽어온 이미지에서 얼굴을 감지합니다. 결과는 감지된 얼굴 정보(x1, y1, x2, y2)의 리스트입니다.
   face_list = _face.detect_face(image)
 
   # 감지된 얼굴 리스트를 콘솔에 출력합니다. (디버깅용)
@@ -49,12 +49,12 @@ while True:
     image = camera.putTextPIL(image, '얼굴없음', (0, 0), 40, '#000000')
   # 감지된 얼굴이 있을 경우
   else:
-    # 첫 번째로 감지된 얼굴의 바운딩 박스 정보(x, y, w, h)를 가져옵니다.
+    # 첫 번째로 감지된 얼굴의 바운딩 박스 정보(x1, y1, x2, y2)를 가져옵니다.
     box = face_list[0]
     x = box[0] # 시작 x 좌표
     y = box[1] # 시작 y 좌표
-    w = box[2] # 너비
-    h = box[3] # 높이
+    w = box[2] - box[0] # 너비 (260624v1부터 box는 (x1, y1, x2, y2))
+    h = box[3] - box[1] # 높이
 
     # 감지된 얼굴 주위에 초록색 사각형을 그립니다.
     image = camera.rectangle(image, (x, y), ((x + w), (y + h)), '#009900', 10)

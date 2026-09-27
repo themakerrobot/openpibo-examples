@@ -1,6 +1,6 @@
 # 필요한 openpibo 라이브러리를 임포트합니다.
-from openpibo.vision import Face   # 얼굴 감지, 학습, 인식 기능
-from openpibo.vision import Camera # 카메라 제어
+from openpibo.vision_face import Face   # 얼굴 감지, 학습, 인식 기능
+from openpibo.vision_camera import Camera # 카메라 제어
 from openpibo.oled import Oled   # OLED 디스플레이 제어 (이 코드에서는 객체만 생성하고 사용하지 않음)
 
 # 얼굴 관련 기능 객체를 생성합니다.
@@ -26,12 +26,12 @@ if not len(face_list):
   image = camera.putTextPIL(image, '얼굴없음', (0, 0), 40, '#000000')
 # 감지된 얼굴이 있을 경우 (첫 번째 감지된 얼굴을 학습 대상으로 사용)
 else:
-  # 첫 번째로 감지된 얼굴의 바운딩 박스 정보(x, y, w, h)를 가져옵니다.
+  # 첫 번째로 감지된 얼굴의 바운딩 박스 정보(x1, y1, x2, y2)를 가져옵니다.
   box = face_list[0]
   x = box[0] # 시작 x 좌표
   y = box[1] # 시작 y 좌표
-  w = box[2] # 너비
-  h = box[3] # 높이
+  w = box[2] - box[0] # 너비 (260624v1부터 box는 (x1, y1, x2, y2))
+  h = box[3] - box[1] # 높이
 
   # 감지된 얼굴 영역(image, box)을 '홍길동'이라는 이름으로 학습시킵니다.
   # 동일한 이름으로 여러 번 학습시키면 해당 인물의 얼굴 데이터가 누적됩니다.

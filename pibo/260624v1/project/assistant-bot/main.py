@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 # 필요한 openpibo 라이브러리 및 표준 라이브러리를 임포트합니다.
-from openpibo.vision import Camera, Detect, Face  # 카메라, 객체 감지(QR코드), 얼굴 감지
+from openpibo.vision_camera import Camera
+from openpibo.vision_detect import Detect
+from openpibo.vision_face import Face  # 카메라, 객체 감지(QR코드), 얼굴 감지
 from openpibo.speech import Speech, Dialog       # 음성 합성(TTS), 대화 처리
 from openpibo.audio import Audio                 # 오디오 재생
 from openpibo.oled import Oled                   # OLED 디스플레이 제어
@@ -31,7 +33,7 @@ min_text = '-1'                               # 분 단위 알람 기능에서 �
 # 초기 설정을 수행합니다.
 oled.set_font(size=30)                        # OLED 디스플레이의 폰트 크기를 30으로 설정
 # "사진 찍을게요." 라는 안내 음성을 미리 생성하여 'photo.mp3' 파일로 저장 (효율성 증대)
-speech.tts(string='사진 찍을게요.', filename='photo.mp3', voice='main')
+speech.tts(text='사진 찍을게요.', filename='photo.mp3', voice='main')
 
 # 메인 루프를 시작합니다. 프로그램은 이 루프를 계속 반복 실행합니다.
 while True:
@@ -42,8 +44,10 @@ while True:
 
   # 카메라로부터 현재 이미지를 읽어옵니다.
   image = camera.read()
-  # 이미지에서 QR 코드를 감지합니다. 결과는 딕셔너리 형태로 반환됩니다.
-  result = detect.detect_qr(image)
+  # 이미지에서 QR 코드를 감지합니다.
+  qr_items = detect.detect_qr(image)
+  # 260624v1부터 detect_qr은 인식한 코드 전부를 리스트로 반환합니다. 첫 번째 것만 사용합니다.
+  result = qr_items[0] if qr_items else {'data': '', 'type': '', 'box': None}
   # 이미지에서 얼굴을 감지합니다. 결과는 감지된 얼굴들의 좌표 리스트로 반환됩니다.
   items = face.detect_face(image)
 
@@ -52,20 +56,20 @@ while True:
     oled.draw_image(IMAGE_DIR + 'machine/clock.jpg') # OLED에 시계 이미지를 표시
     oled.show()                                     # OLED 화면 업데이트
     # 현재 시와 분을 음성으로 안내하는 TTS 파일을 생성 ('voice.mp3')
-    speech.tts(string=f'{time_list[3]}시 {time_list[4]}분 입니다.', filename='voice.mp3', voice='main')
+    speech.tts(text=f'{time_list[3]}시 {time_list[4]}분 입니다.', filename='voice.mp3', voice='main')
     audio.play('voice.mp3', VOLUME)                 # 생성된 시간 안내 음성 파일을 재생
     min_text = time_list[4]                         # 현재 분을 min_text에 저장하여 다음 비교에 사용
 
   # 얼굴 감지 시 처리: 감지된 얼굴 리스트(items)의 길이가 0보다 크면 (얼굴이 감지되면) 실행
   if len(items) > 0:
     device.eye_on(0, 255, 255)                     # 로봇 눈 LED를 청록색(Cyan)으로 켭니다.
-    x, y, w, h = items[0]                          # 첫 번째로 감지된 얼굴의 좌표와 크기를 가져옵니다.
+    x1, y1, x2, y2 = items[0]                          # 첫 번째로 감지된 얼굴의 좌표(x1, y1, x2, y2)를 가져옵니다.
     # 감지된 얼굴 주위에 흰색 사각형을 그립니다 (카메라 미리보기용).
-    image = camera.rectangle(image, (x, y), (x + w, y + h), (255, 255, 255), 3)
+    image = camera.rectangle(image, (x1, y1), (x2, y2), (255, 255, 255), 3)
     oled.draw_image(IMAGE_DIR + 'expression/smile.jpg') # OLED에 웃는 표정 이미지를 표시
     oled.show()                                     # OLED 화면 업데이트
     # "안녕하세요." 인사말 TTS 파일을 생성 ('voice.mp3')
-    speech.tts(string='안녕하세요.', filename='voice.mp3', voice='main')
+    speech.tts(text='안녕하세요.', filename='voice.mp3', voice='main')
     audio.play('voice.mp3', VOLUME)                 # 생성된 인사말 음성 파일을 재생
     motion.set_motion('greeting')                   # 'greeting' 모션을 실행 (인사 동작)
   # 얼굴이 감지되지 않았을 경우 실행
@@ -82,7 +86,7 @@ while True:
       oled.draw_image(IMAGE_DIR + 'weather/cloud.jpg') # OLED에 구름 이미지를 표시
       oled.show()                                   # OLED 화면 업데이트
       # 날씨 예보 안내 TTS 파일을 생성 ('voice.mp3')
-      speech.tts(string='날씨를 알려드리겠습니다. ' + comment, filename='voice.mp3', voice='main')
+      speech.tts(text='날씨를 알려드리겠습니다. ' + comment, filename='voice.mp3', voice='main')
       audio.play('voice.mp3', VOLUME)               # 생성된 날씨 안내 음성 파일을 재생
       motion.set_motion('speak1')                   # 'speak1' 모션을 실행 (말하는 동작)
     elif result['data'] == '뉴스':                  # 카드 데이터가 '뉴스'일 경우
@@ -90,7 +94,7 @@ while True:
       oled.draw_image(IMAGE_DIR + 'etc/star.jpg')     # OLED에 별 이미지를 표시
       oled.show()                                   # OLED 화면 업데이트
       # 뉴스 요약 안내 TTS 파일을 생성 ('voice.mp3')
-      speech.tts(string='뉴스를 알려드리겠습니다. ' + comment, filename='voice.mp3', voice='main')
+      speech.tts(text='뉴스를 알려드리겠습니다. ' + comment, filename='voice.mp3', voice='main')
       audio.play('voice.mp3', VOLUME)               # 생성된 뉴스 안내 음성 파일을 재생
       motion.set_motion('speak1')                   # 'speak1' 모션을 실행 (말하는 동작)
     elif result['data'] == '체조':                  # 카드 데이터가 '체조'일 경우
@@ -107,7 +111,7 @@ while True:
       # 코드를 실행하는 컴퓨터의 터미널에서 입력을 받아야 합니다.
       comment = dialog.get_dialog(input("Q>"))
       # 답변 내용을 TTS 파일로 생성 ('voice.mp3')
-      speech.tts(string='답변드리겠습니다. ' + comment, filename='voice.mp3', voice='main')
+      speech.tts(text='답변드리겠습니다. ' + comment, filename='voice.mp3', voice='main')
       audio.play('voice.mp3', VOLUME)               # 생성된 답변 음성 파일을 재생
       motion.set_motion('speak1')                   # 'speak1' 모션을 실행 (말하는 동작)
     elif result['data'] == '카메라':                # 카드 데이터가 '카메라'일 경우

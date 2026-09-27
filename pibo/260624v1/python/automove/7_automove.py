@@ -1,5 +1,5 @@
-from openpibo.vision import Camera
-from openpibo.vision import Detect
+from openpibo.vision_camera import Camera
+from openpibo.vision_detect import Detect
 from openpibo.motion import Motion
 import time
 
@@ -42,15 +42,16 @@ while True:
   
   # 마커 인식 함수
   # 입력: 이미지 / 실제 마커 길이
-  # 반환: 딕셔너리{"data":마커 데이터, "img":마커가 표시된 이미지}
-  #   - 마커 데이터: 딕셔너리{"id": 마커번호, "distance": 카메라와 마커의 실제거리, "center": 마커 중심 좌표}
+  # 반환: 마커 데이터 리스트
+  #   - 각 항목: 딕셔너리{"id": 마커번호, "distance": 카메라와 마커의 실제거리, "center": 마커 중심 좌표}
   items = detect.detect_marker(image, MARKER_LENGTH)
   
   # 마커 표시된 이미지 IDE로 표시
-  camera.imshow_to_ide(items['img'])
+  detect.detect_marker_vis(image, items)  # 마커 테두리·번호·거리 표시
+  camera.imshow_to_ide(image)
 
   # 인식된 마커가 있으면, engine함수를 통해 중심 x좌표, 거리를 가져옴
-  dX, distance = engine(items['data'], MARKER_ID)
+  dX, distance = engine(items, MARKER_ID)
 
   if dX == None or distance == None:
     # 마커가 없거나, 다른 마커가 인식된 경우

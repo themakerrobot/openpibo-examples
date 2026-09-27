@@ -1,4 +1,5 @@
-from openpibo.vision import Camera, Face
+from openpibo.vision_camera import Camera
+from openpibo.vision_face import Face
 
 c = Camera()
 f = Face()
@@ -15,7 +16,7 @@ face = faces[0]
 f.train_face(img, face, name)
 f.save_db('facedata')
 
-x,y,w,h = face
+x1,y1,x2,y2 = face
 
-c.rectangle(img, (x,y), (x+w, y+h), (255, 255, 255), 2)
+c.rectangle(img, (x1,y1), (x2,y2), (255, 255, 255), 2)
 c.imshow_to_ide(img)

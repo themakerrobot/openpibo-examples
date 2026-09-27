@@ -1,4 +1,6 @@
-from openpibo.vision import Camera, Detect, Face
+from openpibo.vision_camera import Camera
+from openpibo.vision_detect import Detect
+from openpibo.vision_face import Face
 from openpibo.speech import Speech, Dialog
 from openpibo.audio import Audio
 from openpibo.oled import Oled
@@ -25,7 +27,7 @@ VOLUME = 50
 min_text = '-1'
 
 oled.set_font(size=30)
-speech.tts(string='사진 찍을게요.', filename='photo.mp3', voice='main')
+speech.tts(text='사진 찍을게요.', filename='photo.mp3', voice='main')
 
 while True:
   # 현재 시간 확인 2024년 7월 15일 10시 10분 5초 라면, 
@@ -34,25 +36,27 @@ while True:
   print(time_list)
   
   image = camera.read()
-  result = detect.detect_qr(image)
+  qr_items = detect.detect_qr(image)
+  # 260624v1부터 detect_qr은 인식한 코드 전부를 리스트로 반환합니다. 첫 번째 것만 사용합니다.
+  result = qr_items[0] if qr_items else {'data': '', 'type': '', 'box': None}
   items = face.detect_face(image)
 
   # 분 단위 알람 기능
   if time_list[4] != min_text:
     oled.draw_image(IMAGE_DIR + 'machine/clock.jpg')
     oled.show()
-    speech.tts(string=f'{time_list[3]}시 {time_list[4]}분 입니다.', filename='voice.mp3', voice='main')
+    speech.tts(text=f'{time_list[3]}시 {time_list[4]}분 입니다.', filename='voice.mp3', voice='main')
     audio.play('voice.mp3', VOLUME)
     min_text = time_list[4]
 
   # 얼굴을 찾았을 때, 인사
   if len(items) > 0:
     device.eye_on(0,255,255)
-    x,y,w,h = items[0]
-    image = camera.rectangle(image, (x,y), (x+w, y+h), (255,255,255), 3)
+    x1,y1,x2,y2 = items[0]
+    image = camera.rectangle(image, (x1,y1), (x2,y2), (255,255,255), 3)
     oled.draw_image(IMAGE_DIR + 'expression/smile.jpg')
     oled.show()
-    speech.tts(string='안녕하세요.', filename='voice.mp3', voice='main')
+    speech.tts(text='안녕하세요.', filename='voice.mp3', voice='main')
     audio.play('voice.mp3', VOLUME)
     motion.set_motion('greeting')
   else:
@@ -65,14 +69,14 @@ while True:
       comment = weather.search('서울')['forecast']
       oled.draw_image(IMAGE_DIR + 'weather/cloud.jpg')
       oled.show()
-      speech.tts(string='날씨를 알려드리겠습니다. '+comment, filename='voice.mp3', voice='main')
+      speech.tts(text='날씨를 알려드리겠습니다. '+comment, filename='voice.mp3', voice='main')
       audio.play('voice.mp3', VOLUME)
       motion.set_motion('speak1')
     elif result['data'] == '뉴스':
       comment = news.search('뉴스랭킹')[0]['description']
       oled.draw_image(IMAGE_DIR + 'etc/star.jpg')
       oled.show()
-      speech.tts(string='뉴스를 알려드리겠습니다. '+comment, filename='voice.mp3', voice='main')
+      speech.tts(text='뉴스를 알려드리겠습니다. '+comment, filename='voice.mp3', voice='main')
       audio.play('voice.mp3', VOLUME)
       motion.set_motion('speak1')      
     elif result['data'] == '체조':
@@ -85,7 +89,7 @@ while True:
       oled.draw_image(IMAGE_DIR + 'expression/joke.jpg')
       oled.show()
       comment = dialog.get_dialog(input("Q>"))
-      speech.tts(string='답변드리겠습니다. ' + comment, filename='voice.mp3', voice='main')
+      speech.tts(text='답변드리겠습니다. ' + comment, filename='voice.mp3', voice='main')
       audio.play('voice.mp3', VOLUME)
       motion.set_motion('speak1')
     elif result['data'] == '카메라':

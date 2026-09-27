@@ -22,5 +22,5 @@ alist = [
 
 c = 0
 for string in alist:
-  speech.tts(string=string, filename=f'mp3/answer_{c}.mp3', voice='main', lang='ko')
+  speech.tts(text=string, filename=f'mp3/answer_{c}.mp3', voice='main', lang='ko')
   c+=1

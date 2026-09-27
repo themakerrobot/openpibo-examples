@@ -1,7 +1,7 @@
 # 필요한 openpibo 라이브러리 및 표준 라이브러리를 임포트합니다.
-from openpibo.vision import Camera           # 카메라 제어
-from openpibo.vision import Detect           # 객체 감지 (마커 감지에 사용)
-from openpibo.vision import TeachableMachine # 티처블 머신 모델 사용
+from openpibo.vision_camera import Camera           # 카메라 제어
+from openpibo.vision_detect import Detect           # 객체 감지 (마커 감지에 사용)
+from openpibo.vision_classify import TeachableMachine # 티처블 머신 모델 사용
 from openpibo.motion import Motion           # 로봇 모션 제어
 import time                                  # 시간 관련 함수 사용 (예: sleep)
 
@@ -80,10 +80,11 @@ while True:
   # items 딕셔너리에는 감지 결과 이미지('img')와 감지된 마커 정보 리스트('data')가 포함됩니다.
   items = detect.detect_marker(image, MARKER_LENGTH)
   # 감지 결과 이미지를 IDE 미리보기 창에 표시합니다. (1ms 동안 표시)
-  camera.imshow_to_ide(items['img'], 1)
+  detect.detect_marker_vis(image, items)  # 마커 테두리·번호·거리 표시
+  camera.imshow_to_ide(image, 1)
 
   # engine 함수를 호출하여 현재 찾아야 할 마커(MARKER_LIST[index])의 방향(dX)과 거리(distance)를 얻습니다.
-  dX, distance = engine(items['data'], MARKER_LIST[index])
+  dX, distance = engine(items, MARKER_LIST[index])
 
   # 마커를 찾지 못했을 경우 (dX나 distance가 None일 경우)
   if dX == None or distance == None:
@@ -95,8 +96,9 @@ while True:
       time.sleep(2)           # 목 움직임 대기
       image = camera.read()     # 목을 돌린 상태에서 이미지 다시 촬영
       items = detect.detect_marker(image, MARKER_LENGTH) # 마커 재탐색
-      camera.imshow_to_ide(items['img'], 1)             # 결과 이미지 표시
-      dX, distance = engine(items['data'], MARKER_LIST[index]) # 재탐색 결과 분석
+      detect.detect_marker_vis(image, items)  # 마커 테두리·번호·거리 표시
+      camera.imshow_to_ide(image, 1)             # 결과 이미지 표시
+      dX, distance = engine(items, MARKER_LIST[index]) # 재탐색 결과 분석
 
       # 오른쪽에서 마커를 찾았을 경우
       if dX != None and distance != None:
@@ -109,8 +111,9 @@ while True:
         time.sleep(2)          # 목 움직임 대기 (오른쪽 -> 중앙 -> 왼쪽 이동 시간 고려)
         image = camera.read()    # 목을 돌린 상태에서 이미지 다시 촬영
         items = detect.detect_marker(image, MARKER_LENGTH) # 마커 재탐색
-        camera.imshow_to_ide(items['img'], 1)            # 결과 이미지 표시
-        dX, distance = engine(items['data'], MARKER_LIST[index]) # 재탐색 결과 분석
+        detect.detect_marker_vis(image, items)  # 마커 테두리·번호·거리 표시
+        camera.imshow_to_ide(image, 1)            # 결과 이미지 표시
+        dX, distance = engine(items, MARKER_LIST[index]) # 재탐색 결과 분석
 
         # 왼쪽에서 마커를 찾았을 경우
         if dX != None and distance != None:

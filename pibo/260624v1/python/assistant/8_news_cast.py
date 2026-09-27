@@ -27,7 +27,7 @@ oled.draw_text((0,25), result['pubDate'])
 oled.show()
 
 # 뉴스 제목 음성 재생하기
-speech.tts(string='뉴스입니다.' + result['title'], filename='voice.mp3', voice='main')
+speech.tts(text='뉴스입니다.' + result['title'], filename='voice.mp3', voice='main')
 audio.play('voice.mp3', 80)
 
 # 동작 실행하기

@@ -1,6 +1,6 @@
-from openpibo.vision import Camera
-from openpibo.vision import Detect
-from openpibo.vision import Face
+from openpibo.vision_camera import Camera
+from openpibo.vision_detect import Detect
+from openpibo.vision_face import Face
 
 camera = Camera()
 detect = Detect()

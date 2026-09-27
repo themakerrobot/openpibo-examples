@@ -1,5 +1,5 @@
-from openpibo.vision import Camera
-from openpibo.vision import Face
+from openpibo.vision_camera import Camera
+from openpibo.vision_face import Face
 
 camera = Camera()
 face = Face()

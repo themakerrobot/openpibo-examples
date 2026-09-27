@@ -10,7 +10,7 @@ motion = Motion()
 
 # voice mp3 미리 생성
 filename = 'voice.mp3'
-speech.tts(string='안녕하세요, 파이보입니다.', filename='voice.mp3', voice='main')
+speech.tts(text='안녕하세요, 파이보입니다.', filename='voice.mp3', voice='main')
 
 # mp3 재생 반복할 함수
 # 안에서 mp3가 계속 재생됩니다.

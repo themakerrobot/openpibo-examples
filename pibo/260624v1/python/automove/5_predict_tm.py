@@ -1,5 +1,5 @@
-from openpibo.vision import TeachableMachine
-from openpibo.vision import Camera
+from openpibo.vision_classify import TeachableMachine
+from openpibo.vision_camera import Camera
 
 tm = TeachableMachine()
 camera = Camera()

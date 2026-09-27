@@ -1,5 +1,5 @@
-from openpibo.vision import Camera
-from openpibo.vision import Detect
+from openpibo.vision_camera import Camera
+from openpibo.vision_detect import Detect
 from openpibo.motion import Motion
 import time
 
@@ -47,8 +47,9 @@ while True:
   time.sleep(2)
   image = camera.read()
   items = detect.detect_marker(image, MARKER_LENGTH)
-  camera.imshow_to_ide(items['img'])
-  dX, distance = engine(items['data'], MARKER_LIST[index])
+  detect.detect_marker_vis(image, items)  # 마커 테두리·번호·거리 표시
+  camera.imshow_to_ide(image)
+  dX, distance = engine(items, MARKER_LIST[index])
 
   if dX == None or distance == None:
     if STATE != '회전':
