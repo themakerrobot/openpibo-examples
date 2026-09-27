@@ -4,7 +4,7 @@
 
 기기 없이 확인할 수 있는 것만 본다.
   - python: openpibo 모듈/클래스/함수 import, 생성자·메서드 존재 여부, 위치 인자 개수
-  - block : 블록 타입 정의 여부, 파이썬 생성기 유무, 필드 이름, 고정 드롭다운 값, 입력 이름
+  - block : 블록 타입 정의 여부, 파이썬 생성기 유무, 필드 이름, 고정 드롭다운 값, 입력 이름, 빈 입력
 실행 결과(카메라·서보·음성 동작)는 실기기에서 따로 확인해야 한다.
 
 사용:
@@ -242,6 +242,11 @@ def check_block(path, defs):
         for iname in (b.get("inputs") or {}):
             if iname not in d["inputs"]:
                 issues[f"블록 `{t}` 입력 `{iname}` 없음"] += 1
+        # 비어 있는 입력은 생성기에서 None 이 되어 실행 중 에러가 난다
+        for iname in d["inputs"]:
+            slot = (b.get("inputs") or {}).get(iname) or {}
+            if not (slot.get("block") or slot.get("shadow")):
+                issues[f"블록 `{t}` 입력 `{iname}` 비어 있음"] += 1
     return len(blocks), [f"{k}" + (f" ×{n}" if n > 1 else "") for k, n in sorted(issues.items())]
 
 
