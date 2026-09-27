@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>안내 로봇 파이보</title>
+    <style>
+        /* DOS/레트로 모니터 느낌
+           - 질문은 바로 표시
+           - 답변은 커서를 깜박이며 글자 하나씩 표시 (타이핑 효과)
+           - 커서는 기존 스타일 재활용
+        */
+
+        html, body {
+            margin:0; padding:0;
+            width:100%; height:100%;
+            font-family: "Consolas", "Courier New", monospace;
+            background:#000;
+            color:#00FF00;
+            overflow:hidden;
+        }
+
+        body {
+            display:flex;
+            flex-direction:column;
+        }
+
+        header {
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            padding:10px 20px;
+            background:#000;
+            border-bottom:1px solid #00FF00;
+        }
+
+        header .title {
+            display:flex;
+            align-items:center;
+            gap:10px;
+            font-size:1.8rem;
+            font-weight:bold;
+        }
+
+        header .title::before {
+            content:"[ROBOT PIBO]";
+            font-size:1rem;
+            color:#00FF00;
+        }
+
+        header .controls {
+            display:flex;
+            align-items:center;
+            gap:20px;
+            font-size:1rem;
+        }
+
+        .volume-control {
+            display:flex;
+            align-items:center;
+            gap:10px;
+        }
+
+        .volume-control span {
+            color:#00FF00;
+        }
+
+        .volume-control input[type="range"] {
+            width:120px;
+            accent-color:#00FF00;
+            background:#000;
+        }
+
+        .fullscreen-btn {
+            background:#000;
+            color:#00FF00;
+            border:1px solid #00FF00;
+            padding:5px 10px;
+            cursor:pointer;
+            font-size:1rem;
+        }
+
+        .fullscreen-btn:hover {
+            background:#00FF00;
+            color:#000;
+        }
+
+        main {
+            flex:1;
+            display:flex;
+            overflow:hidden;
+            background:#000;
+        }
+
+        .sidebar {
+            flex:0 0 350px;
+            border-right:1px solid #00FF00;
+            display:flex;
+            flex-direction:column;
+            padding:20px;
+            overflow-y:auto;
+        }
+
+        .sidebar h2 {
+            font-size:1.2rem;
+            margin:0 0 20px 0;
+        }
+
+        .question-button {
+            background:#000;
+            border:1px solid #00FF00;
+            border-radius:0;
+            padding:8px;
+            margin-bottom:10px;
+            font-size:1rem;
+            color:#00FF00;
+            text-align:left;
+            cursor:pointer;
+            transition:background 0.3s;
+        }
+
+        .question-button:hover {
+            background:#002200;
+        }
+
+        .question-button.selected {
+            background:#003300;
+            color:#00FF00;
+        }
+
+        .display-area {
+            flex:1;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            padding:20px;
+            overflow:auto;
+            position:relative;
+            background:#000;
+        }
+
+        /* 모니터 같이 보이는 프레임 */
+        .monitor-frame {
+            width:80%;
+            max-width:1000px;
+            height:70%;
+            border:2px solid #00FF00;
+            display:flex;
+            flex-direction:column;
+            justify-content:center;
+            align-items:center;
+            background:#000;
+            position:relative;
+        }
+
+        .monitor-frame::after {
+            content:"";
+            position:absolute;
+            bottom:-20px;
+            left:50%;
+            transform:translateX(-50%);
+            width:60px;
+            height:20px;
+            background:#00FF00;
+        }
+
+        /* 주제 표시 (상단 중앙) */
+        .topic {
+            position:absolute;
+            top:20px;
+            left:50%;
+            transform:translateX(-50%);
+            font-size:2rem;
+            color:#00FF00;
+        }
+
+        #qa-container {
+            text-align:center;
+            padding:20px;
+            width:100%;
+            box-sizing:border-box;
+        }
+
+        .initial-guide {
+            font-size:1.5rem;
+            opacity:0.9;
+        }
+
+        .question-line {
+            font-size:1.5rem;
+            margin-bottom:20px;
+        }
+
+        .answer-line {
+            font-size:2rem; /* 답변 크게 */
+            line-height:1.4;
+            display:inline-block;
+            white-space:pre-wrap;
+            text-align:left;
+        }
+
+        /* 커서 깜박이게 */
+        .blink-cursor {
+            display:inline-block;
+        }
+        .blink-cursor::after {
+            content:"_";
+            animation:blink 1s infinite alternate;
+        }
+
+        @keyframes blink {
+            0% { opacity:1; }
+            100% { opacity:0; }
+        }
+
+    </style>
+</head>
+<body>
+    <header>
+        <div class="title"></div>
+        <div class="controls">
+            <div class="volume-control">
+                VOL:<span id="volume-label">{{ initial_volume }}</span>
+                <input type="range" id="volume-slider" min="0" max="100" value="{{ initial_volume }}" oninput="updateVolume(this.value)">
+            </div>
+            <button class="fullscreen-btn" id="fullscreen-btn" onclick="toggleFullScreen()">[FULL]</button>
+        </div>
+    </header>
+    <main>
+        <div class="sidebar">
+            <h2>QUESTIONS</h2>
+            {% for question in qlist %}
+                <button class="question-button" onclick="sendQuestion({{ loop.index0 }}, this)">{{ question }}</button>
+            {% endfor %}
+        </div>
+        <div class="display-area">
+            <div class="topic">{{ topic }}</div>
+            <div class="monitor-frame">
+                <div id="qa-container">
+                    <div class="initial-guide">SELECT A QUESTION ON THE LEFT</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        let fullscreen = false;
+        function toggleFullScreen() {
+            if (!fullscreen) {
+                if (document.documentElement.requestFullscreen) {
+                    document.documentElement.requestFullscreen();
+                } else if (document.documentElement.webkitRequestFullscreen) {
+                    document.webkitRequestFullscreen();
+                } else if (document.msRequestFullscreen) {
+                    document.msRequestFullscreen();
+                }
+                fullscreen = true;
+                document.getElementById('fullscreen-btn').textContent = '[EXIT]';
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
+                fullscreen = false;
+                document.getElementById('fullscreen-btn').textContent = '[FULL]';
+            }
+        }
+
+        async function updateVolume(value) {
+            document.getElementById("volume-label").textContent = value;
+            await fetch("/set_volume/", {
+                method:"POST",
+                headers:{"Content-Type":"application/json"},
+                body:JSON.stringify({volume:parseInt(value)})
+            });
+        }
+
+        async function sendQuestion(index, buttonElement) {
+            document.querySelectorAll(".question-button").forEach(el => el.classList.remove("selected"));
+            buttonElement.classList.add("selected");
+
+            const response = await fetch("/get_answer/", {
+                method:"POST",
+                headers:{"Content-Type":"application/json"},
+                body:JSON.stringify({index})
+            });
+
+            if(response.ok) {
+                const data = await response.json();
+                const qaContainer = document.getElementById("qa-container");
+                
+                // 질문은 바로 표시
+                qaContainer.innerHTML = `
+                    <div class="question-line">Q: ${buttonElement.textContent}</div>
+                    <div class="answer-line">A: <span id="answer-text"></span><span class="blink-cursor"></span></div>
+                `;
+
+                // 타이핑 효과 구현
+                const answer = data.answer;
+                const answerTextEl = document.getElementById("answer-text");
+                const blinkCursor = answerTextEl.nextElementSibling;
+                let i = 0;
+
+                const typeInterval = setInterval(() => {
+                    if (i < answer.length) {
+                        answerTextEl.textContent += answer[i];
+                        i++;
+                    } else {
+                        clearInterval(typeInterval);
+                        // 타이핑 끝나면 커서는 그대로 둬도 됨
+                    }
+                }, 100); // 글자 당 100ms
+            } else {
+                alert("SERVER ERROR");
+            }
+        }
+    </script>
+</body>
+</html>
