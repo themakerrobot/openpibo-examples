@@ -234,3 +234,5 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.toptal.com/developers/gitignore/api/windows,linux,macos,visualstudiocode,python
+# 문서 사이트 빌드 결과
+_site/

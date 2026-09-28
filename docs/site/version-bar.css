@@ -1,0 +1,36 @@
+/* 문서 페이지 상단 버전 바. 바 높이(--vbar-total)는 version-bar.js 가 실제 높이로 넣는다.
+   sphinx_rtd_theme 의 고정 사이드바를 바 높이만큼 내린다. */
+:root { --vbar-total: 40px; }
+
+.vbar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px;
+  padding: 7px 16px 0; box-sizing: border-box;
+  background: #1f2a37; color: #e5e7eb;
+  font: 14px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans KR", sans-serif;
+}
+.vbar > :not(.vbar-warn) { margin-bottom: 7px; }
+.vbar a { color: #e5e7eb; text-decoration: none; }
+.vbar a:hover { color: #fff; text-decoration: underline; }
+.vbar-home { font-weight: 600; }
+.vbar-devices { display: inline-flex; gap: 4px; }
+.vbar-devices a { padding: 3px 10px; border-radius: 4px; }
+.vbar-devices a.on { background: #374151; color: #fff; font-weight: 600; }
+.vbar select {
+  font: inherit; color: #111827; background: #f9fafb;
+  border: 1px solid #9ca3af; border-radius: 4px; padding: 2px 6px;
+}
+.vbar-meta { color: #9ca3af; }
+.vbar-warn {
+  flex: 0 0 calc(100% + 32px); margin: 0 -16px; padding: 5px 16px; box-sizing: border-box;
+  background: #fef3c7; color: #78350f; font-weight: 600;
+}
+
+html.has-vbar body { padding-top: var(--vbar-total); }
+html.has-vbar .wy-nav-side { top: var(--vbar-total); bottom: 0; height: auto; }
+
+@media (max-width: 640px) {
+  .vbar { gap: 6px 8px; padding: 7px 12px 0; }
+  .vbar-meta { display: none; }
+  .vbar-warn { flex-basis: calc(100% + 24px); margin: 0 -12px; padding: 5px 12px; }
+}
