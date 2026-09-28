@@ -1,0 +1,134 @@
+#!/usr/bin/env python3
+"""
+openpibo-os.<기기> 태그 안에 커밋된 Sphinx 빌드 결과(docs/build/html)를 모아
+기기·버전별 문서 사이트를 만든다. 버전 목록은 docs/versions.json.
+
+  <out>/index.html                      기기·버전 목록 (첫 화면)
+  <out>/<기기>/<태그>/...                 해당 태그의 docs/build/html
+  <out>/_nav/                           모든 문서 페이지 상단의 버전 바 (JS/CSS)
+
+문서 원본은 각 OS 저장소 태그가 기준이다. 이 스크립트는 복사와 버전 바 삽입만 한다.
+
+사용:
+  python3 tools/docs/build_site.py --out _site
+  python3 tools/docs/build_site.py --out _site --cache /path/to/clones   # 로컬 클론 재사용
+    (--cache 아래 openpibo-os.pibo, openpibo-os.pibrain 처럼 저장소 이름의 클론이 있으면 git archive 로 꺼낸다)
+"""
+import argparse
+import html
+import io
+import json
+import os
+import shutil
+import subprocess
+import tarfile
+import tempfile
+
+ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+SRC_DIR = os.path.join(ROOT, "docs")
+DOCS_PATH = "docs/build/html"
+STATUS_LABEL = {"released": "배포", "testing": "테스트 중"}
+
+
+def run(cmd, **kw):
+    return subprocess.run(cmd, check=True, **kw)
+
+
+def fetch_docs(repo_url, tag, dest, cache):
+    """태그의 docs/build/html 을 dest 로 꺼낸다."""
+    name = repo_url.rstrip("/").split("/")[-1]
+    local = os.path.join(cache, name) if cache else None
+    if local and os.path.isdir(os.path.join(local, ".git")):
+        data = run(["git", "-C", local, "archive", "--format=tar", tag, DOCS_PATH], capture_output=True).stdout
+        with tarfile.open(fileobj=io.BytesIO(data)) as tf:
+            tmp = tempfile.mkdtemp()
+            tf.extractall(tmp)
+            shutil.copytree(os.path.join(tmp, DOCS_PATH), dest)
+            shutil.rmtree(tmp)
+        return
+    tmp = tempfile.mkdtemp()
+    try:
+        run(["git", "-c", "advice.detachedHead=false", "clone", "--quiet", "--depth", "1", "--branch", tag,
+             "--filter=blob:none", "--sparse", repo_url, tmp])
+        run(["git", "-C", tmp, "sparse-checkout", "set", DOCS_PATH])
+        shutil.copytree(os.path.join(tmp, DOCS_PATH), dest)
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+
+
+def inject_nav(site_root, version_dir, device, tag):
+    """버전 디렉터리의 모든 html 에 버전 바를 넣는다."""
+    for base, _, files in os.walk(version_dir):
+        for fn in files:
+            if not fn.endswith(".html"):
+                continue
+            path = os.path.join(base, fn)
+            rel_root = os.path.relpath(site_root, base).replace(os.sep, "/") + "/"
+            page = os.path.relpath(path, version_dir).replace(os.sep, "/")
+            with open(path, encoding="utf-8") as f:
+                s = f.read()
+            if "_nav/version-bar.js" in s:
+                continue
+            head = f'<link rel="stylesheet" href="{rel_root}_nav/version-bar.css">\n'
+            body = (f'<script src="{rel_root}_nav/versions.js"></script>\n'
+                    f'<script src="{rel_root}_nav/version-bar.js" data-root="{rel_root}" '
+                    f'data-device="{device}" data-tag="{tag}" data-page="{html.escape(page)}"></script>\n')
+            s = s.replace("</head>", head + "</head>", 1) if "</head>" in s else head + s
+            s = s.replace("</body>", body + "</body>", 1) if "</body>" in s else s + body
+            with open(path, "w", encoding="utf-8") as f:
+                f.write(s)
+
+
+def render_index(cfg):
+    """첫 화면: 기기별 버전 목록 (정적 HTML)."""
+    cards = []
+    for dev in cfg["devices"]:
+        rows = []
+        latest = next((v["tag"] for v in dev["versions"] if v["status"] == "released"), None)
+        for v in dev["versions"]:
+            badge = STATUS_LABEL.get(v["status"], v["status"])
+            extra = ' <span class="latest">최신 배포</span>' if v["tag"] == latest else ""
+            rows.append(
+                f'<li><a href="{dev["id"]}/{v["tag"]}/index.html">'
+                f'<span class="tag">{html.escape(v["tag"])}</span>'
+                f'<span class="meta">openpibo {html.escape(v.get("openpibo", ""))}</span>'
+                f'<span class="badge {v["status"]}">{badge}</span>{extra}</a></li>')
+        cards.append(f'<section class="card"><h2>{html.escape(dev["name"])}</h2><ul>{"".join(rows)}</ul></section>')
+    with open(os.path.join(SRC_DIR, "site", "index.html"), encoding="utf-8") as f:
+        tpl = f.read()
+    return tpl.replace("<!--DEVICES-->", "\n".join(cards))
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--out", required=True)
+    ap.add_argument("--cache", help="OS 저장소 클론이 있는 폴더 (없으면 GitHub 에서 받음)")
+    args = ap.parse_args()
+
+    with open(os.path.join(SRC_DIR, "versions.json"), encoding="utf-8") as f:
+        cfg = json.load(f)
+    out = os.path.abspath(args.out)
+    shutil.rmtree(out, ignore_errors=True)
+    os.makedirs(out)
+
+    for dev in cfg["devices"]:
+        for v in dev["versions"]:
+            dest = os.path.join(out, dev["id"], v["tag"])
+            print(f"{dev['id']} {v['tag']} <- {dev['repo']}")
+            fetch_docs(dev["repo"], v["tag"], dest, args.cache)
+            inject_nav(out, dest, dev["id"], v["tag"])
+
+    nav = os.path.join(out, "_nav")
+    os.makedirs(nav)
+    for fn in ("version-bar.js", "version-bar.css"):
+        shutil.copy(os.path.join(SRC_DIR, "site", fn), nav)
+    with open(os.path.join(nav, "versions.js"), "w", encoding="utf-8") as f:
+        f.write("window.DOCS_VERSIONS = " + json.dumps(cfg, ensure_ascii=False) + ";\n")
+    with open(os.path.join(out, "index.html"), "w", encoding="utf-8") as f:
+        f.write(render_index(cfg))
+    open(os.path.join(out, ".nojekyll"), "w").close()  # _static, _sources 폴더가 무시되지 않게
+    print(f"done: {out}")
+
+
+if __name__ == "__main__":
+    main()

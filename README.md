@@ -48,6 +48,15 @@ openpibo-examples/
 
 두 버전 이상에서 같이 쓰는 파일(모델, 마커 이미지 등)은 `assets/`에 한 벌만 둡니다.
 
+## 문서 사이트 (버전별)
+
+각 OS 태그 안의 문서(`docs/build/html`)를 모아 기기·버전별로 GitHub Pages에 올립니다. 문서 원본은 OS 저장소 태그가 기준이며, 각 OS 저장소의 기존 Pages는 그대로 둡니다.
+
+- 올릴 버전 목록: `docs/versions.json` (`status`: `released` 배포 / `testing` 테스트 중)
+- 테스트 중 버전은 모든 페이지 상단에 경고 띠가 붙습니다. 공식 배포되면 `status`를 `released`로 바꿉니다.
+- `main`에서 `docs/`가 바뀌면 `.github/workflows/docs.yml`이 사이트를 다시 만들어 배포합니다.
+- 로컬 미리보기: `python3 tools/docs/build_site.py --out _site` 후 `_site`를 웹 서버로 엽니다.
+
 ## tools/compat
 
 | 파일 | 용도 |

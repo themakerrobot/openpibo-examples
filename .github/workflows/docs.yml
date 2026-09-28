@@ -1,0 +1,45 @@
+# 기기·버전별 문서 사이트를 GitHub Pages 로 배포한다.
+# 버전 목록은 docs/versions.json. 문서는 각 openpibo-os.<기기> 태그의 docs/build/html 을 그대로 쓴다.
+# 저장소 Settings → Pages → Source 를 "GitHub Actions" 로 설정해야 배포된다.
+name: docs
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - docs/**
+      - tools/docs/**
+      - .github/workflows/docs.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: python3 tools/docs/build_site.py --out _site
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

@@ -1,0 +1,22 @@
+{
+  "devices": [
+    {
+      "id": "pibo",
+      "name": "Pibo",
+      "repo": "https://github.com/themakerrobot/openpibo-os.pibo",
+      "versions": [
+        {"tag": "260915v1", "status": "testing", "openpibo": "0.9.4.0"},
+        {"tag": "260624v1", "status": "released", "openpibo": "0.9.3.3.1"}
+      ]
+    },
+    {
+      "id": "pibrain",
+      "name": "piBrain",
+      "repo": "https://github.com/themakerrobot/openpibo-os.pibrain",
+      "versions": [
+        {"tag": "260916v5", "status": "testing", "openpibo": "0.9.4.0"},
+        {"tag": "260624v1", "status": "released", "openpibo": "0.9.3.3.1"}
+      ]
+    }
+  ]
+}

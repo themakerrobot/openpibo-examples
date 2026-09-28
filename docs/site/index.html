@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OpenPibo 문서</title>
+<style>
+  :root {
+    --bg: #f6f7f9; --card: #ffffff; --text: #111827; --muted: #6b7280; --line: #e5e7eb;
+    --accent: #1d4ed8; --rel-bg: #dcfce7; --rel-fg: #166534; --test-bg: #fef3c7; --test-fg: #92400e;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f141a; --card: #171d25; --text: #e5e7eb; --muted: #9ca3af; --line: #2a323d;
+      --accent: #93c5fd; --rel-bg: #14532d; --rel-fg: #bbf7d0; --test-bg: #78350f; --test-fg: #fde68a;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans KR", sans-serif;
+  }
+  main { max-width: 880px; margin: 0 auto; padding: 48px 16px; }
+  h1 { font-size: 28px; margin: 0 0 8px; }
+  .lead { color: var(--muted); margin: 0 0 32px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 20px; }
+  .card h2 { font-size: 20px; margin: 0 0 12px; }
+  ul { list-style: none; margin: 0; padding: 0; }
+  li + li { border-top: 1px solid var(--line); }
+  li a {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px;
+    padding: 10px 4px; color: var(--text); text-decoration: none;
+  }
+  li a:hover .tag { color: var(--accent); text-decoration: underline; }
+  .tag { font-weight: 600; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+  .meta { color: var(--muted); font-size: 14px; }
+  .badge { font-size: 12px; padding: 2px 8px; border-radius: 999px; margin-left: auto; }
+  .badge.released { background: var(--rel-bg); color: var(--rel-fg); }
+  .badge.testing { background: var(--test-bg); color: var(--test-fg); }
+  .latest { font-size: 12px; color: var(--accent); }
+  footer { margin-top: 32px; color: var(--muted); font-size: 14px; }
+  footer a { color: var(--accent); }
+</style>
+</head>
+<body>
+<main>
+  <h1>OpenPibo 문서</h1>
+  <p class="lead">기기의 OS 버전과 같은 버전의 문서를 보세요. 테스트 중인 버전은 공식 배포 전이라 내용이 바뀔 수 있습니다.</p>
+  <div class="grid">
+<!--DEVICES-->
+  </div>
+  <footer>
+    문서 원본: <a href="https://github.com/themakerrobot/openpibo-os.pibo">openpibo-os.pibo</a>,
+    <a href="https://github.com/themakerrobot/openpibo-os.pibrain">openpibo-os.pibrain</a> 의 각 버전 태그
+  </footer>
+</main>
+</body>
+</html>
