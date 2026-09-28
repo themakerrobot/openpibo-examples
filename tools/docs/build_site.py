@@ -85,6 +85,16 @@ def inject_nav(site_root, version_dir, device, tag):
                 f.write(s)
 
 
+def add_example_links(cfg):
+    """이 저장소에 <기기>/<태그>/ 예제 폴더가 있는 버전에 GitHub 폴더 주소를 넣는다."""
+    ex = cfg.get("examples") or {}
+    base = ex.get("repo", "").rstrip("/")
+    for dev in cfg["devices"]:
+        for v in dev["versions"]:
+            if base and os.path.isdir(os.path.join(ROOT, dev["id"], v["tag"])):
+                v["examples"] = f'{base}/tree/{ex.get("branch", "main")}/{dev["id"]}/{v["tag"]}'
+
+
 def render_index(cfg):
     """첫 화면: 기기별 버전 목록 (정적 HTML)."""
     cards = []
@@ -95,10 +105,15 @@ def render_index(cfg):
             badges = f'<span class="pb-badge {v["status"]}">{STATUS_LABEL.get(v["status"], v["status"])}</span>'
             if v["tag"] == latest:
                 badges = '<span class="pb-badge latest">최신</span>' + badges
+            links = f'<a class="pb-btn pb-btn--sm" href="{dev["id"]}/{v["tag"]}/index.html">문서</a>'
+            if v.get("examples"):
+                links += (f'<a class="pb-btn pb-btn--sm" href="{html.escape(v["examples"])}" '
+                          f'target="_blank" rel="noopener">예제</a>')
             rows.append(
-                f'<li><a href="{dev["id"]}/{v["tag"]}/index.html">'
+                f'<li><a class="ver" href="{dev["id"]}/{v["tag"]}/index.html">'
                 f'<span class="tag">{html.escape(v["tag"])}</span>'
-                f'<span class="badges">{badges}</span></a></li>')
+                f'<span class="badges">{badges}</span></a>'
+                f'<span class="links">{links}</span></li>')
         cards.append(f'<section class="card"><h2>{html.escape(dev["name"])}</h2><ul>{"".join(rows)}</ul></section>')
     with open(os.path.join(SRC_DIR, "site", "index.html"), encoding="utf-8") as f:
         tpl = f.read()
@@ -113,6 +128,7 @@ def main():
 
     with open(os.path.join(SRC_DIR, "versions.json"), encoding="utf-8") as f:
         cfg = json.load(f)
+    add_example_links(cfg)
     out = os.path.abspath(args.out)
     shutil.rmtree(out, ignore_errors=True)
     os.makedirs(out)

@@ -1,4 +1,9 @@
 {
+  "examples": {
+    "repo": "https://github.com/themakerrobot/openpibo-guide",
+    "branch": "main",
+    "note": "예제 폴더(<기기>/<태그>/)가 있는 버전에만 예제 링크를 단다"
+  },
   "ui": {
     "repo": "https://github.com/themakerrobot/openpibo-os.pibo",
     "ref": "main",
