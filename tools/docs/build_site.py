@@ -155,6 +155,12 @@ def main():
         shutil.copy(os.path.join(SRC_DIR, "site", fn), nav)
     with open(os.path.join(nav, "versions.js"), "w", encoding="utf-8") as f:
         f.write("window.DOCS_VERSIONS = " + json.dumps(cfg, ensure_ascii=False) + ";\n")
+    # 파비콘: OS 웹·문서와 같은 파이보 아이콘(문서 _static/icon.png)을 첫 화면에도 쓴다
+    for dev in cfg["devices"]:
+        icon = os.path.join(out, dev["id"], dev["versions"][0]["tag"], "_static", "icon.png")
+        if os.path.isfile(icon):
+            shutil.copy(icon, os.path.join(out, "favicon.png"))
+            break
     with open(os.path.join(out, "index.html"), "w", encoding="utf-8") as f:
         f.write(render_index(cfg))
     open(os.path.join(out, ".nojekyll"), "w").close()  # _static, _sources 폴더가 무시되지 않게
