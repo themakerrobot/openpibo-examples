@@ -1,4 +1,4 @@
-# openpibo-examples
+# openpibo-guide
 
 Pibo / piBrain 예제 모음입니다. **기기 → OS 버전 → 종류(python / block / project)** 순서로 정리되어 있습니다.
 
@@ -12,7 +12,7 @@ Pibo / piBrain 예제 모음입니다. **기기 → OS 버전 → 종류(python 
 ## 구조
 
 ```
-openpibo-examples/
+openpibo-guide/
 ├── pibo/<버전>/
 │   ├── python/     # 파이썬 예제 (basics, modules, 주제별)
 │   ├── block/      # 블록코딩 JSON (basics, examples, botcard, 주제별)
@@ -50,7 +50,7 @@ openpibo-examples/
 
 ## 문서 사이트 (버전별)
 
-각 OS 태그 안의 문서(`docs/build/html`)를 모아 기기·버전별로 GitHub Pages에 올립니다. 문서 원본은 OS 저장소 태그가 기준이며, 각 OS 저장소의 기존 Pages는 그대로 둡니다.
+각 OS 태그 안의 문서(`docs/build/html`)를 모아 기기·버전별로 GitHub Pages(<https://themakerrobot.github.io/openpibo-guide/>)에 올립니다. 문서 원본은 OS 저장소 태그가 기준이며, 각 OS 저장소의 기존 Pages는 그대로 둡니다.
 
 - 올릴 버전 목록: `docs/versions.json` (`status`: `released` 배포 / `testing` 테스트 중)
 - 테스트 중 버전은 모든 페이지 상단에 경고 띠가 붙습니다. 공식 배포되면 `status`를 `released`로 바꿉니다.
