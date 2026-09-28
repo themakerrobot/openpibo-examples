@@ -26,7 +26,9 @@
   var home = document.createElement('a');
   home.className = 'vbar-home';
   home.href = root + 'index.html';
-  home.textContent = '문서 목록';
+  home.title = '버전별 문서 목록';
+  home.setAttribute('aria-label', 'OpenPibo 가이드 — 버전별 문서 목록');
+  home.innerHTML = '<span class="mark" aria-hidden="true">P</span><span class="label">OpenPibo 가이드</span>';
   bar.appendChild(home);
 
   var devs = document.createElement('span');
@@ -58,13 +60,6 @@
   });
   sel.onchange = function () { go(dev, sel.value); };
   bar.appendChild(sel);
-
-  if (cur.openpibo) {
-    var meta = document.createElement('span');
-    meta.className = 'vbar-meta';
-    meta.textContent = 'openpibo ' + cur.openpibo;
-    bar.appendChild(meta);
-  }
 
   document.body.insertBefore(bar, document.body.firstChild);
   document.documentElement.classList.add('has-vbar');

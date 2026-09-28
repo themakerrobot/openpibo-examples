@@ -1,9 +1,7 @@
 # Pibo — 260624v1
 
-- 기준: openpibo-os.pibo 태그 `260624v1`, openpibo `0.9.3.3.1`
-- 정적 검사: [COMPAT.md](COMPAT.md) (188/188 통과)
-- 실기기 확인: **진행 전**
-- 이전 버전 대비 바뀐 점: [MIGRATION.md](MIGRATION.md)
+- 문서: <https://themakerrobot.github.io/openpibo-guide/pibo/260624v1/index.html>
+- 이전 버전 예제를 옮겨 쓸 때 바뀐 점: [MIGRATION.md](MIGRATION.md)
 
 ## python/
 
@@ -61,4 +59,4 @@
 ## 주의
 
 - 랜드마크 블록 예제(`history-performance/vision.json`)는 화면에 얼굴이 없으면 실행 중 에러가 납니다.
-- `face.detect_face()`의 반환값은 `(x1, y1, x2, y2)`입니다. openpibo 0.9.3.3.1 docstring에는 아직 `(x, y, w, h)`로 적혀 있습니다.
+- `face.detect_face()`의 반환값은 `(x1, y1, x2, y2)`입니다. 260624v1 문서(docstring)에는 아직 `(x, y, w, h)`로 적혀 있습니다.

@@ -1,6 +1,6 @@
 # piBrain 260624v1 — 이전 버전 대비 바뀐 점
 
-구 IDE(openpibo-os 2024) 기준 블록 예제를 260624v1(openpibo `0.9.3.3.1`)에 맞게 고친 내역입니다.
+구버전 IDE 기준 블록 예제를 260624v1에 맞게 고친 내역입니다.
 블록 변환은 `tools/compat/migrate_blocks_260624v1.py`로 했습니다.
 
 ## Block

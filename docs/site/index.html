@@ -1,59 +1,75 @@
 <!doctype html>
-<html lang="ko">
+<html lang="ko" data-theme="soft">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>OpenPibo 문서</title>
+<title>OpenPibo 가이드</title>
+<link rel="stylesheet" href="_nav/kit/pibo-ui.css">
+<script>
+  // OS 웹 화면과 같은 밝기 3단계(light / soft / dark). 기본은 soft, 기기 설정이 어두우면 dark
+  try {
+    if (window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches)
+      document.documentElement.setAttribute('data-theme', 'dark');
+  } catch (e) {}
+</script>
 <style>
-  :root {
-    --bg: #f6f7f9; --card: #ffffff; --text: #111827; --muted: #6b7280; --line: #e5e7eb;
-    --accent: #1d4ed8; --rel-bg: #dcfce7; --rel-fg: #166534; --test-bg: #fef3c7; --test-fg: #92400e;
+  body.pb-v2 { margin: 0; min-height: 100vh; word-break: keep-all; overflow-wrap: anywhere; }
+  body.pb-v2 .pb-header {
+    background: var(--v2-frame); color: var(--v2-frame-ink);
+    border-bottom: 1px solid var(--v2-frame-line);
   }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #0f141a; --card: #171d25; --text: #e5e7eb; --muted: #9ca3af; --line: #2a323d;
-      --accent: #93c5fd; --rel-bg: #14532d; --rel-fg: #bbf7d0; --test-bg: #78350f; --test-fg: #fde68a;
-    }
+  .brand-mark {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 22px; height: 22px; border-radius: 6px;
+    background: var(--v2-frame-ink); color: var(--v2-frame); font-size: 12px; font-weight: 800;
   }
-  * { box-sizing: border-box; }
-  body {
-    margin: 0; background: var(--bg); color: var(--text);
-    font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans KR", sans-serif;
+  main { max-width: 960px; margin: 0 auto; padding: 32px 16px 48px; }
+  h1 { font-size: 26px; font-weight: 800; margin: 0 0 6px; letter-spacing: -.3px; }
+  h1::after {
+    content: ""; display: block; width: 36px; height: 4px; margin-top: 10px;
+    border-radius: 2px; background: var(--v2-yellow);
   }
-  main { max-width: 880px; margin: 0 auto; padding: 48px 16px; }
-  h1 { font-size: 28px; margin: 0 0 8px; }
-  .lead { color: var(--muted); margin: 0 0 32px; }
+  .lead { color: var(--v2-ink-2); margin: 14px 0 28px; line-height: 1.6; }
   .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
-  .card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 20px; }
-  .card h2 { font-size: 20px; margin: 0 0 12px; }
-  ul { list-style: none; margin: 0; padding: 0; }
-  li + li { border-top: 1px solid var(--line); }
-  li a {
-    display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px;
-    padding: 10px 4px; color: var(--text); text-decoration: none;
+  .card {
+    background: var(--v2-surface); border: 1px solid var(--v2-line);
+    border-radius: 12px; padding: 18px 18px 8px;
   }
-  li a:hover .tag { color: var(--accent); text-decoration: underline; }
-  .tag { font-weight: 600; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
-  .meta { color: var(--muted); font-size: 14px; }
-  .badge { font-size: 12px; padding: 2px 8px; border-radius: 999px; margin-left: auto; }
-  .badge.released { background: var(--rel-bg); color: var(--rel-fg); }
-  .badge.testing { background: var(--test-bg); color: var(--test-fg); }
-  .latest { font-size: 12px; color: var(--accent); }
-  footer { margin-top: 32px; color: var(--muted); font-size: 14px; }
-  footer a { color: var(--accent); }
+  .card h2 { font-size: 18px; font-weight: 700; margin: 0 0 8px; }
+  .card ul { list-style: none; margin: 0; padding: 0; }
+  .card li + li { border-top: 1px solid var(--v2-line); }
+  .card li a {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px;
+    min-height: 44px; padding: 8px 4px; color: var(--v2-ink); text-decoration: none;
+    border-radius: 8px;
+  }
+  .card li a:hover { background: var(--v2-hover); }
+  .card li a:focus-visible { outline: 2px solid var(--v2-accent); outline-offset: 2px; }
+  .tag { font: 700 15px/1 var(--pb-mono); }
+  .badges { margin-left: auto; display: inline-flex; gap: 6px; }
+  .pb-badge.released { background: var(--v2-accent-t); color: var(--v2-accent-ink); }
+  .pb-badge.testing { background: var(--v2-yellow-t); color: var(--v2-ink); }
+  .pb-badge.latest { background: var(--v2-accent); color: var(--v2-on-dark); }
+  .help { margin-top: 28px; }
+  body.pb-v2 .help.pb-note--warn { background: var(--v2-yellow-t); border-left-color: var(--v2-yellow-2); color: var(--v2-ink); }
+  .help h3 { font-size: 15px; margin: 0 0 6px; }
+  .help p { margin: 0; color: var(--v2-ink); line-height: 1.6; }
 </style>
 </head>
-<body>
+<body class="pb pb-v2">
+<header class="pb-header">
+  <span class="pb-header__brand"><span class="brand-mark" aria-hidden="true">P</span> OpenPibo 가이드</span>
+</header>
 <main>
-  <h1>OpenPibo 문서</h1>
-  <p class="lead">기기의 OS 버전과 같은 버전의 문서를 보세요. 테스트 중인 버전은 공식 배포 전이라 내용이 바뀔 수 있습니다.</p>
+  <h1>버전별 문서</h1>
+  <p class="lead">내 기기의 OS 버전과 같은 버전의 문서를 여세요. 버전마다 쓸 수 있는 기능과 블록이 다릅니다.</p>
   <div class="grid">
 <!--DEVICES-->
   </div>
-  <footer>
-    문서 원본: <a href="https://github.com/themakerrobot/openpibo-os.pibo">openpibo-os.pibo</a>,
-    <a href="https://github.com/themakerrobot/openpibo-os.pibrain">openpibo-os.pibrain</a> 의 각 버전 태그
-  </footer>
+  <section class="help pb-note pb-note--warn">
+    <h3>테스트 중인 버전</h3>
+    <p>아직 공식 배포 전인 버전입니다. 내용이 바뀔 수 있으니 수업에는 <strong>배포</strong> 표시가 있는 버전을 쓰세요.</p>
+  </section>
 </main>
 </body>
 </html>
