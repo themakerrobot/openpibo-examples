@@ -32,13 +32,15 @@
   .card h2 { font-size: 18px; font-weight: 700; margin: 0 0 8px; }
   .card ul { list-style: none; margin: 0; padding: 0; }
   .card li + li { border-top: 1px solid var(--v2-line); }
-  .card li a {
-    display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px;
-    min-height: 44px; padding: 8px 4px; color: var(--v2-ink); text-decoration: none;
-    border-radius: 8px;
+  .card li { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; padding: 6px 0; }
+  .card li a.ver {
+    flex: 1 1 180px; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px;
+    min-height: 44px; padding: 0 6px; color: var(--v2-ink); text-decoration: none; border-radius: 8px;
   }
-  .card li a:hover { background: var(--v2-hover); }
+  .card li a.ver:hover { background: var(--v2-hover); }
   .card li a:focus-visible { outline: 2px solid var(--v2-accent); outline-offset: 2px; }
+  .links { display: inline-flex; gap: 6px; }
+  .links .pb-btn { text-decoration: none; }
   .tag { font: 700 15px/1 var(--pb-mono); }
   .badges { margin-left: auto; display: inline-flex; gap: 6px; }
   .pb-badge.released { background: var(--v2-accent-t); color: var(--v2-accent-ink); }
@@ -55,8 +57,8 @@
   <span class="pb-header__brand"><span class="brand-mark" aria-hidden="true">P</span> OpenPibo 가이드</span>
 </header>
 <main>
-  <h1>버전별 문서</h1>
-  <p class="lead">내 기기의 OS 버전과 같은 버전의 문서를 여세요. 버전마다 쓸 수 있는 기능과 블록이 다릅니다.</p>
+  <h1>버전별 문서와 예제</h1>
+  <p class="lead">내 기기의 OS 버전과 같은 버전의 문서와 예제를 쓰세요. 버전마다 쓸 수 있는 기능과 블록이 다릅니다.</p>
   <div class="grid">
 <!--DEVICES-->
   </div>

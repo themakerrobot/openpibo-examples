@@ -50,6 +50,11 @@
   border: 1px solid var(--frame-3); border-radius: 7px; cursor: pointer;
 }
 .vbar :focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+.vbar-examples {
+  display: inline-flex; align-items: center; height: 28px; padding: 0 12px; box-sizing: border-box;
+  border-radius: 7px; background: var(--seg-on); border: 1px solid var(--frame-3);
+}
+.vbar-examples:hover { background: #fff; }
 
 /* 테스트 중 안내 — 키트 .pb-note--warn 처럼 왼쪽 띠 + 옅은 노랑 */
 .vbar-warn {

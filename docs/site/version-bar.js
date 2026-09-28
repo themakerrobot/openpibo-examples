@@ -61,6 +61,18 @@
   sel.onchange = function () { go(dev, sel.value); };
   bar.appendChild(sel);
 
+  // 이 버전의 예제 폴더(GitHub)가 있으면 링크
+  if (cur.examples) {
+    var ex = document.createElement('a');
+    ex.className = 'vbar-examples';
+    ex.href = cur.examples;
+    ex.target = '_blank';
+    ex.rel = 'noopener';
+    ex.textContent = '예제';
+    ex.title = '이 버전의 예제 (GitHub)';
+    bar.appendChild(ex);
+  }
+
   document.body.insertBefore(bar, document.body.firstChild);
   document.documentElement.classList.add('has-vbar');
 
