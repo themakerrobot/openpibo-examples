@@ -270,8 +270,6 @@ def main():
     lib = index_library(os.path.join(args.os, "openpibo"))
     defs = json.loads(subprocess.check_output(
         ["node", os.path.join(HERE, "extract_blocks.js"), os.path.join(args.os, "ide", "static")]))
-    ver = next((l.split("=")[1].strip().strip("'\"") for l in open(os.path.join(args.os, "openpibo", "__init__.py"))
-                if l.startswith("__version__")), "?")
     tag = subprocess.run(["git", "-C", args.os, "describe", "--tags", "--exact-match"],
                          capture_output=True, text=True).stdout.strip() or "?"
 
@@ -294,7 +292,7 @@ def main():
     lines = [
         f"# 호환성 검사 — `{args.examples}`",
         "",
-        f"- 기준: openpibo-os 태그 `{tag}`, openpibo `{ver}`",
+        f"- 기준: openpibo-os 태그 `{tag}`",
         f"- 방법: 정적 검사 (`tools/compat/check_compat.py`). **실기기 동작 확인은 별도.**",
         f"- 결과: {len(rows)}개 중 OK {ok} / FAIL {len(rows) - ok}",
         "",

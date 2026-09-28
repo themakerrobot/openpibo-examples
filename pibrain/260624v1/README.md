@@ -1,9 +1,7 @@
 # piBrain — 260624v1
 
-- 기준: openpibo-os.pibrain 태그 `260624v1`, openpibo `0.9.3.3.1`
-- 정적 검사: [COMPAT.md](COMPAT.md) (25/25 통과)
-- 실기기 확인: **진행 전**
-- 이전 버전 대비 바뀐 점: [MIGRATION.md](MIGRATION.md)
+- 문서: <https://themakerrobot.github.io/openpibo-guide/pibrain/260624v1/index.html>
+- 이전 버전 예제를 옮겨 쓸 때 바뀐 점: [MIGRATION.md](MIGRATION.md)
 
 ## block/
 

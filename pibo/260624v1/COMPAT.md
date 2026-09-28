@@ -1,6 +1,6 @@
 # 호환성 검사 — `pibo/260624v1`
 
-- 기준: openpibo-os 태그 `260624v1`, openpibo `0.9.3.3.1`
+- 기준: openpibo-os 태그 `260624v1`
 - 방법: 정적 검사 (`tools/compat/check_compat.py`). **실기기 동작 확인은 별도.**
 - 결과: 188개 중 OK 188 / FAIL 0
 

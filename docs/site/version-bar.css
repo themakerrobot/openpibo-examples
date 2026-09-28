@@ -1,36 +1,68 @@
-/* 문서 페이지 상단 버전 바. 바 높이(--vbar-total)는 version-bar.js 가 실제 높이로 넣는다.
-   sphinx_rtd_theme 의 고정 사이드바를 바 높이만큼 내린다. */
+/* 문서 페이지 상단 버전 바. OS 웹 화면 v2(Pibo UI Kit body.pb-v2) 상단바와 같은 색·모양.
+   문서(Sphinx) 페이지 전체에 키트를 싣지 않고, 바에 필요한 값만 옮겨 쓴다.
+   바 높이(--vbar-total)는 version-bar.js 가 실제 높이로 넣는다. */
+@font-face { font-family: "Pretendard"; font-weight: 600; font-style: normal; font-display: swap;
+  src: local("Pretendard SemiBold"), url("kit/fonts/Pretendard-SemiBold.subset.woff2") format("woff2"); }
+@font-face { font-family: "Pretendard"; font-weight: 700; font-style: normal; font-display: swap;
+  src: local("Pretendard Bold"), url("kit/fonts/Pretendard-Bold.subset.woff2") format("woff2"); }
+
 :root { --vbar-total: 40px; }
 
 .vbar {
+  --frame: #fbc92d; --frame-2: rgba(61, 47, 18, .10); --frame-3: rgba(61, 47, 18, .16);
+  --frame-line: rgba(61, 47, 18, .12); --ink: #3d2f12;
+  --seg-on: #fffdf6; --seg-on-sh: 0 1px 3px rgba(61, 47, 18, .22), 0 0 0 .5px rgba(61, 47, 18, .14);
+  --warn-bg: #fdf0cc; --warn-edge: #e8a90c; --warn-ink: #1a1e29;
   position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
-  display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px;
-  padding: 7px 16px 0; box-sizing: border-box;
-  background: #1f2a37; color: #e5e7eb;
-  font: 14px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans KR", sans-serif;
+  display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px;
+  padding: 4px 14px 0; box-sizing: border-box;
+  background: var(--frame); color: var(--ink);
+  border-bottom: 1px solid var(--frame-line);
+  font: 600 13px/1 "Pretendard", -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo",
+        "Noto Sans KR", "Malgun Gothic", "맑은 고딕", "Segoe UI", sans-serif;
 }
-.vbar > :not(.vbar-warn) { margin-bottom: 7px; }
-.vbar a { color: #e5e7eb; text-decoration: none; }
-.vbar a:hover { color: #fff; text-decoration: underline; }
-.vbar-home { font-weight: 600; }
-.vbar-devices { display: inline-flex; gap: 4px; }
-.vbar-devices a { padding: 3px 10px; border-radius: 4px; }
-.vbar-devices a.on { background: #374151; color: #fff; font-weight: 600; }
+.vbar > :not(.vbar-warn) { margin-bottom: 4px; }
+.vbar a, .vbar a:visited { color: var(--ink); text-decoration: none; }
+
+.vbar-home {
+  display: inline-flex; align-items: center; gap: 8px; height: 32px; padding: 0 8px;
+  border-radius: 7px; font-size: 15px; font-weight: 700; white-space: nowrap;
+}
+.vbar-home:hover { background: var(--frame-2); }
+.vbar-home .mark {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 22px; height: 22px; border-radius: 6px;
+  background: var(--ink); color: var(--frame); font-size: 12px; font-weight: 800;
+}
+
+/* 기기 탭 — 상단바 세그먼트 (선택된 것이 흰 알약) */
+.vbar-devices {
+  display: inline-flex; gap: 2px; padding: 2px; height: 30px; box-sizing: border-box;
+  border-radius: 8px; background: var(--frame-2);
+}
+.vbar-devices a { display: inline-flex; align-items: center; padding: 0 12px; border-radius: 6px; }
+.vbar-devices a:hover:not(.on) { background: var(--frame-3); }
+.vbar-devices a.on { background: var(--seg-on); box-shadow: var(--seg-on-sh); }
+
 .vbar select {
-  font: inherit; color: #111827; background: #f9fafb;
-  border: 1px solid #9ca3af; border-radius: 4px; padding: 2px 6px;
+  height: 28px; padding: 0 8px; box-sizing: border-box;
+  font: inherit; color: var(--ink); background: var(--seg-on);
+  border: 1px solid var(--frame-3); border-radius: 7px; cursor: pointer;
 }
-.vbar-meta { color: #9ca3af; }
+.vbar :focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+
+/* 테스트 중 안내 — 키트 .pb-note--warn 처럼 왼쪽 띠 + 옅은 노랑 */
 .vbar-warn {
-  flex: 0 0 calc(100% + 32px); margin: 0 -16px; padding: 5px 16px; box-sizing: border-box;
-  background: #fef3c7; color: #78350f; font-weight: 600;
+  flex: 0 0 calc(100% + 28px); margin: 0 -14px; padding: 7px 14px; box-sizing: border-box;
+  background: var(--warn-bg); color: var(--warn-ink); border-left: 4px solid var(--warn-edge);
+  font-weight: 600; line-height: 1.4; word-break: keep-all;
 }
 
 html.has-vbar body { padding-top: var(--vbar-total); }
 html.has-vbar .wy-nav-side { top: var(--vbar-total); bottom: 0; height: auto; }
 
 @media (max-width: 640px) {
-  .vbar { gap: 6px 8px; padding: 7px 12px 0; }
-  .vbar-meta { display: none; }
-  .vbar-warn { flex-basis: calc(100% + 24px); margin: 0 -12px; padding: 5px 12px; }
+  .vbar { padding: 4px 10px 0; gap: 6px; }
+  .vbar-home .label { display: none; }
+  .vbar-warn { flex-basis: calc(100% + 20px); margin: 0 -10px; padding: 7px 10px; }
 }

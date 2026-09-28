@@ -6,8 +6,10 @@ openpibo-os.<기기> 태그 안에 커밋된 Sphinx 빌드 결과(docs/build/htm
   <out>/index.html                      기기·버전 목록 (첫 화면)
   <out>/<기기>/<태그>/...                 해당 태그의 docs/build/html
   <out>/_nav/                           모든 문서 페이지 상단의 버전 바 (JS/CSS)
+  <out>/_nav/kit/                       Pibo UI Kit (openpibo-os.pibo design/, versions.json 의 ui)
 
-문서 원본은 각 OS 저장소 태그가 기준이다. 이 스크립트는 복사와 버전 바 삽입만 한다.
+문서 원본은 각 OS 저장소 태그가 기준이다. 디자인은 OS 웹 화면(v2)과 같은 Pibo UI Kit 을 쓴다.
+이 스크립트는 복사와 버전 바 삽입만 한다.
 
 사용:
   python3 tools/docs/build_site.py --out _site
@@ -34,24 +36,28 @@ def run(cmd, **kw):
     return subprocess.run(cmd, check=True, **kw)
 
 
-def fetch_docs(repo_url, tag, dest, cache):
-    """태그의 docs/build/html 을 dest 로 꺼낸다."""
+def fetch_docs(repo_url, tag, dest, cache, path=DOCS_PATH):
+    """태그(또는 브랜치)의 path 를 dest 로 꺼낸다."""
     name = repo_url.rstrip("/").split("/")[-1]
     local = os.path.join(cache, name) if cache else None
     if local and os.path.isdir(os.path.join(local, ".git")):
-        data = run(["git", "-C", local, "archive", "--format=tar", tag, DOCS_PATH], capture_output=True).stdout
+        # 브랜치는 원격 쪽(origin/<이름>)을, 태그는 태그를 쓴다
+        has = lambda r: subprocess.run(["git", "-C", local, "rev-parse", "-q", "--verify", r],
+                                       capture_output=True).returncode == 0
+        ref = f"origin/{tag}" if has(f"origin/{tag}") else tag
+        data = run(["git", "-C", local, "archive", "--format=tar", ref, path], capture_output=True).stdout
         with tarfile.open(fileobj=io.BytesIO(data)) as tf:
             tmp = tempfile.mkdtemp()
             tf.extractall(tmp)
-            shutil.copytree(os.path.join(tmp, DOCS_PATH), dest)
+            shutil.copytree(os.path.join(tmp, path), dest)
             shutil.rmtree(tmp)
         return
     tmp = tempfile.mkdtemp()
     try:
         run(["git", "-c", "advice.detachedHead=false", "clone", "--quiet", "--depth", "1", "--branch", tag,
              "--filter=blob:none", "--sparse", repo_url, tmp])
-        run(["git", "-C", tmp, "sparse-checkout", "set", DOCS_PATH])
-        shutil.copytree(os.path.join(tmp, DOCS_PATH), dest)
+        run(["git", "-C", tmp, "sparse-checkout", "set", path])
+        shutil.copytree(os.path.join(tmp, path), dest)
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
 
@@ -86,13 +92,13 @@ def render_index(cfg):
         rows = []
         latest = next((v["tag"] for v in dev["versions"] if v["status"] == "released"), None)
         for v in dev["versions"]:
-            badge = STATUS_LABEL.get(v["status"], v["status"])
-            extra = ' <span class="latest">최신 배포</span>' if v["tag"] == latest else ""
+            badges = f'<span class="pb-badge {v["status"]}">{STATUS_LABEL.get(v["status"], v["status"])}</span>'
+            if v["tag"] == latest:
+                badges = '<span class="pb-badge latest">최신</span>' + badges
             rows.append(
                 f'<li><a href="{dev["id"]}/{v["tag"]}/index.html">'
                 f'<span class="tag">{html.escape(v["tag"])}</span>'
-                f'<span class="meta">openpibo {html.escape(v.get("openpibo", ""))}</span>'
-                f'<span class="badge {v["status"]}">{badge}</span>{extra}</a></li>')
+                f'<span class="badges">{badges}</span></a></li>')
         cards.append(f'<section class="card"><h2>{html.escape(dev["name"])}</h2><ul>{"".join(rows)}</ul></section>')
     with open(os.path.join(SRC_DIR, "site", "index.html"), encoding="utf-8") as f:
         tpl = f.read()
@@ -120,6 +126,15 @@ def main():
 
     nav = os.path.join(out, "_nav")
     os.makedirs(nav)
+    ui = cfg["ui"]
+    print(f"ui kit {ui['ref']} <- {ui['repo']}")
+    kit = os.path.join(nav, "kit")
+    fetch_docs(ui["repo"], ui["ref"], kit, args.cache, path=ui["path"])
+    # 사이트에 필요한 것만 남긴다: pibo-ui.css, fonts/ (글꼴 라이선스 포함)
+    for fn in os.listdir(kit):
+        if fn not in ("pibo-ui.css", "fonts"):
+            p = os.path.join(kit, fn)
+            shutil.rmtree(p) if os.path.isdir(p) else os.remove(p)
     for fn in ("version-bar.js", "version-bar.css"):
         shutil.copy(os.path.join(SRC_DIR, "site", fn), nav)
     with open(os.path.join(nav, "versions.js"), "w", encoding="utf-8") as f:
