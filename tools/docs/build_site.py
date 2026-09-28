@@ -8,7 +8,8 @@ openpibo-os.<기기> 태그 안에 커밋된 Sphinx 빌드 결과(docs/build/htm
   <out>/_nav/                           모든 문서 페이지 상단의 버전 바 (JS/CSS)
   <out>/_nav/kit/                       Pibo UI Kit (openpibo-os.pibo design/, versions.json 의 ui)
 
-문서 원본은 각 OS 저장소 태그가 기준이다. 디자인은 OS 웹 화면(v2)과 같은 Pibo UI Kit 을 쓴다.
+문서 원본은 각 OS 저장소 태그가 기준이다. 버전에 "repo" 가 있으면 그 저장소의 태그를 쓴다
+(예: Pibo 구버전 v0.9.2.73 은 openpibo-python). 디자인은 OS 웹 화면(v2)과 같은 Pibo UI Kit 을 쓴다.
 이 스크립트는 복사와 버전 바 삽입만 한다.
 
 사용:
@@ -29,7 +30,7 @@ import tempfile
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 SRC_DIR = os.path.join(ROOT, "docs")
 DOCS_PATH = "docs/build/html"
-STATUS_LABEL = {"released": "배포", "testing": "테스트 중"}
+STATUS_LABEL = {"released": "배포", "testing": "테스트 중", "legacy": "구버전"}
 
 
 def run(cmd, **kw):
@@ -136,8 +137,9 @@ def main():
     for dev in cfg["devices"]:
         for v in dev["versions"]:
             dest = os.path.join(out, dev["id"], v["tag"])
-            print(f"{dev['id']} {v['tag']} <- {dev['repo']}")
-            fetch_docs(dev["repo"], v["tag"], dest, args.cache)
+            repo = v.get("repo", dev["repo"])
+            print(f"{dev['id']} {v['tag']} <- {repo}")
+            fetch_docs(repo, v["tag"], dest, args.cache)
             inject_nav(out, dest, dev["id"], v["tag"])
 
     nav = os.path.join(out, "_nav")

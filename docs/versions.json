@@ -23,6 +23,11 @@
         {
           "tag": "260624v1",
           "status": "released"
+        },
+        {
+          "tag": "v0.9.2.73",
+          "status": "legacy",
+          "repo": "https://github.com/themakerrobot/openpibo-python"
         }
       ]
     },
