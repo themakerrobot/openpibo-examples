@@ -1,10 +1,10 @@
-// 문서 페이지 상단 버전 바: 기기·버전 전환, 테스트 중 버전 안내
+// 문서 페이지 상단 버전 바: 기기·버전 전환, 테스트 중·구버전 안내
 (function () {
   var s = document.currentScript;
   var cfg = window.DOCS_VERSIONS;
   if (!s || !cfg) return;
   var root = s.dataset.root, dev = s.dataset.device, tag = s.dataset.tag, page = s.dataset.page;
-  var LABEL = { released: '배포', testing: '테스트 중' };
+  var LABEL = { released: '배포', testing: '테스트 중', legacy: '구버전' };
 
   function url(d, t, p) { return root + d + '/' + t + '/' + (p || 'index.html'); }
 
@@ -81,6 +81,11 @@
     warn.className = 'vbar-warn';
     warn.textContent = '테스트 중인 버전(' + tag + ')입니다. 공식 배포 전이라 내용이 바뀔 수 있습니다.';
     bar.appendChild(warn);
+  } else if (cur.status === 'legacy') {
+    var old = document.createElement('div');
+    old.className = 'vbar-warn';
+    old.textContent = '구버전(' + tag + ') 문서입니다. 260624v1 이전 OS를 쓰는 기기에서만 보세요.';
+    bar.appendChild(old);
   }
 
   // 바 높이만큼 본문·사이드바를 내린다 (화면 폭에 따라 줄바꿈되므로 실제 높이를 잰다)

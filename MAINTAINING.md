@@ -33,7 +33,8 @@ GitHub Pages 설정: Settings → Pages → Source = **GitHub Actions**.
 
 각 OS 태그 안의 문서(`docs/build/html`)를 모아 기기·버전별로 GitHub Pages(<https://themakerrobot.github.io/openpibo-guide/>)에 올립니다. 문서 원본은 OS 저장소 태그가 기준이며, 각 OS 저장소의 기존 Pages는 그대로 둡니다.
 
-- 올릴 버전 목록: `docs/versions.json` (`status`: `released` 배포 / `testing` 테스트 중)
+- 올릴 버전 목록: `docs/versions.json` (`status`: `released` 배포 / `testing` 테스트 중 / `legacy` 구버전)
+- 버전에 `repo`를 적으면 기기 기본 저장소 대신 그 저장소의 태그에서 문서를 가져옵니다. Pibo 구버전 `v0.9.2.73`은 `openpibo-python` 태그를 씁니다(piBrain 구버전은 없음).
 - 디자인: OS 웹 화면 v2와 같은 Pibo UI Kit(`openpibo-os.pibo`의 `design/`)을 빌드할 때 가져옵니다(`versions.json`의 `ui`). 키트는 OS 저장소에서만 고칩니다.
 - 사이트 문구는 사용자용으로만 씁니다. 관리 정보는 이 파일에 둡니다.
 - 예제 링크: 이 저장소에 `<기기>/<태그>/` 폴더가 있는 버전에만 첫 화면과 상단 바에 `예제` 버튼이 붙습니다(GitHub 폴더로 연결, `versions.json`의 `examples`). 예제 폴더를 추가하면 다음 배포 때 자동으로 연결됩니다.
