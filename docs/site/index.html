@@ -47,12 +47,14 @@
   .tag { font: 700 15px/1 var(--pb-mono); }
   .badges { margin-left: auto; display: inline-flex; gap: 6px; }
   .pb-badge.released { background: var(--v2-accent-t); color: var(--v2-accent-ink); }
+  .pb-badge.nightly { background: var(--v2-press); color: var(--v2-ink); }
   .pb-badge.testing { background: var(--v2-yellow-t); color: var(--v2-ink); }
   .pb-badge.legacy { background: var(--v2-press); color: var(--v2-ink-2); }
   .pb-badge.latest { background: var(--v2-accent); color: var(--v2-on-dark); }
   .help { margin-top: 28px; }
   body.pb-v2 .help.pb-note--warn { background: var(--v2-yellow-t); border-left-color: var(--v2-yellow-2); color: var(--v2-ink); }
   .help h3 { font-size: 15px; margin: 0 0 6px; }
+  .help p + h3 { margin-top: 14px; }
   .help p { margin: 0; color: var(--v2-ink); line-height: 1.6; }
 </style>
 </head>
@@ -69,6 +71,8 @@
   <section class="help pb-note pb-note--warn">
     <h3>테스트 중인 버전</h3>
     <p>아직 공식 배포 전인 버전입니다. 내용이 바뀔 수 있으니 수업에는 <strong>배포</strong> 표시가 있는 버전을 쓰세요.</p>
+    <h3>개발 중 (main)</h3>
+    <p>다음 버전을 만들고 있는 최신 문서입니다. 표시된 날짜에 올라온 문서이며, 기기 OS와 맞지 않을 수 있습니다.</p>
   </section>
 </main>
 </body>
