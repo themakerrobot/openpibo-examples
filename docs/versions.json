@@ -17,6 +17,10 @@
       "repo": "https://github.com/themakerrobot/openpibo-os.pibo",
       "versions": [
         {
+          "tag": "main",
+          "status": "nightly"
+        },
+        {
           "tag": "260915v1",
           "status": "testing"
         },
@@ -36,6 +40,10 @@
       "name": "piBrain",
       "repo": "https://github.com/themakerrobot/openpibo-os.pibrain",
       "versions": [
+        {
+          "tag": "main",
+          "status": "nightly"
+        },
         {
           "tag": "260916v5",
           "status": "testing"

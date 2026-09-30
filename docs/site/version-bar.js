@@ -4,7 +4,7 @@
   var cfg = window.DOCS_VERSIONS;
   if (!s || !cfg) return;
   var root = s.dataset.root, dev = s.dataset.device, tag = s.dataset.tag, page = s.dataset.page;
-  var LABEL = { released: '배포', testing: '테스트 중', legacy: '구버전' };
+  var LABEL = { nightly: '개발 중', released: '배포', testing: '테스트 중', legacy: '구버전' };
 
   function url(d, t, p) { return root + d + '/' + t + '/' + (p || 'index.html'); }
 
@@ -54,7 +54,7 @@
   device.versions.forEach(function (v) {
     var o = document.createElement('option');
     o.value = v.tag;
-    o.textContent = v.tag + ' · ' + (LABEL[v.status] || v.status);
+    o.textContent = v.tag + ' · ' + (LABEL[v.status] || v.status) + (v.date ? ' · ' + v.date : '');
     if (v.tag === tag) o.selected = true;
     sel.appendChild(o);
   });
@@ -76,7 +76,12 @@
   document.body.insertBefore(bar, document.body.firstChild);
   document.documentElement.classList.add('has-vbar');
 
-  if (cur.status === 'testing') {
+  if (cur.status === 'nightly') {
+    var dev_ = document.createElement('div');
+    dev_.className = 'vbar-warn';
+    dev_.textContent = '개발 중인 최신 문서(' + tag + (cur.date ? ', ' + cur.date : '') + ')입니다. 기기 OS 버전과 맞지 않을 수 있습니다.';
+    bar.appendChild(dev_);
+  } else if (cur.status === 'testing') {
     var warn = document.createElement('div');
     warn.className = 'vbar-warn';
     warn.textContent = '테스트 중인 버전(' + tag + ')입니다. 공식 배포 전이라 내용이 바뀔 수 있습니다.';

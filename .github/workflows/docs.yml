@@ -1,6 +1,9 @@
 # 기기·버전별 문서 사이트를 GitHub Pages 로 배포한다.
-# 버전 목록은 docs/versions.json. 문서는 각 openpibo-os.<기기> 태그의 docs/build/html 을 그대로 쓴다.
+# 버전 목록은 docs/versions.json. 문서는 각 openpibo-os.<기기> 태그(nightly 는 main 브랜치)의 docs/build/html 을 그대로 쓴다.
 # 저장소 Settings → Pages → Source 를 "GitHub Actions" 로 설정해야 배포된다.
+#
+# 예약 실행(매일 21:00 KST)은 OS 저장소 main 에서 docs/build/html 이 바뀌었을 때만 배포한다.
+# 코드만 바뀐 푸시는 무시하고, 빌드한 문서를 커밋한 날만 다시 올린다.
 name: docs
 
 on:
@@ -10,6 +13,8 @@ on:
       - docs/**
       - tools/docs/**
       - .github/workflows/docs.yml
+  schedule:
+    - cron: "0 12 * * *"  # 12:00 UTC = 21:00 KST
   workflow_dispatch:
 
 permissions:
@@ -22,7 +27,24 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  check:
+    runs-on: ubuntu-latest
+    outputs:
+      changed: ${{ steps.nightly.outputs.changed }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: nightly
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: >-
+          python3 tools/docs/nightly.py
+          --compare "https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/_nav/nightly.json"
+          >> "$GITHUB_OUTPUT"
+
   build:
+    needs: check
+    # 예약 실행은 nightly 문서가 바뀌었을 때만, 푸시·수동 실행은 항상
+    if: github.event_name != 'schedule' || needs.check.outputs.changed == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -30,6 +52,8 @@ jobs:
         with:
           python-version: "3.11"
       - run: python3 tools/docs/build_site.py --out _site
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _site
