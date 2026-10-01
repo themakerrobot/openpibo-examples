@@ -131,9 +131,10 @@ def render_index(cfg):
             badges = f'<span class="pb-badge {v["status"]}">{html.escape(label)}</span>'
             if v["tag"] == latest:
                 badges = '<span class="pb-badge latest">최신</span>' + badges
-            links = f'<a class="pb-btn pb-btn--sm" href="{dev["id"]}/{v["tag"]}/index.html">문서</a>'
+            links = f'<a class="pb-btn pb-btn--sm" href="{dev["id"]}/{v["tag"]}/index.html" title="한국어 문서">문서</a>'
             if "en" in v.get("langs", ()):
-                links += f'<a class="pb-btn pb-btn--sm" href="{dev["id"]}/{v["tag"]}/en/index.html" lang="en">English</a>'
+                links += (f'<a class="pb-btn pb-btn--sm" href="{dev["id"]}/{v["tag"]}/en/index.html" '
+                          f'lang="en" title="English docs">Docs</a>')
             if v.get("examples"):
                 links += (f'<a class="pb-btn pb-btn--sm" href="{html.escape(v["examples"])}" '
                           f'target="_blank" rel="noopener">예제</a>')
