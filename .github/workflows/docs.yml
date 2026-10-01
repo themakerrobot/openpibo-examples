@@ -3,7 +3,7 @@
 # 저장소 Settings → Pages → Source 를 "GitHub Actions" 로 설정해야 배포된다.
 #
 # '테스트 중' 버전은 OS 저장소의 마지막 태그(YYMMDDvN, 접미사 태그 제외)다.
-# 예약 실행(매일 21:00 KST)은 마지막 태그가 바뀌었을 때만 배포한다.
+# 예약 실행(매시간)은 마지막 태그가 바뀌었을 때만 배포한다. 급하면 Actions 에서 수동 실행.
 name: docs
 
 on:
@@ -14,7 +14,7 @@ on:
       - tools/docs/**
       - .github/workflows/docs.yml
   schedule:
-    - cron: "0 12 * * *"  # 12:00 UTC = 21:00 KST
+    - cron: "17 * * * *"  # 매시간 17분 (정각은 GitHub 예약이 몰려 늦어지기 쉽다)
   workflow_dispatch:
 
 permissions:

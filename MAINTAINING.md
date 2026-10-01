@@ -42,7 +42,7 @@ GitHub Pages 설정: Settings → Pages → Source = **GitHub Actions**.
 - `main`에서 `docs/`, `tools/docs/`가 바뀌거나 Actions에서 수동 실행하면 `.github/workflows/docs.yml`이 사이트를 다시 만들어 배포합니다.
 - 영문 문서: 태그(브랜치)에 `docs/build/en`이 있으면 `<기기>/<태그>/en/`으로 함께 올리고, 상단 바에 한국어/English 전환과 첫 화면에 `English` 버튼이 붙습니다. 없는 버전은 한국어만 올립니다.
 - 테스트 중 버전은 `"track": "latest-tag"`로 적어 두면 각 OS 저장소의 마지막 태그로 정해집니다(`tools/docs/latest_tag.py`). 태그 이름은 `YYMMDDvN`만 보고, 접미사가 붙은 태그(`-ph`, `-gl` 등)는 뺍니다. 마지막 태그가 이미 목록에 있는 태그(배포 버전)면 따로 올리지 않습니다.
-- 매일 21:00(KST)에 예약 실행이 돌아 마지막 태그가 지난 배포(`_nav/latest.json`)와 다를 때만 다시 배포합니다. 바로 올리려면 Actions에서 docs 워크플로를 수동 실행합니다.
+- 매시간 예약 실행이 돌아 마지막 태그가 지난 배포(`_nav/latest.json`)와 다를 때만 다시 배포합니다(태그를 찍고 늦어도 약 1시간 안에 반영). 바로 올리려면 Actions에서 docs 워크플로를 수동 실행합니다.
 - 로컬 미리보기: `python3 tools/docs/build_site.py --out _site` 후 `_site`를 웹 서버로 엽니다.
 
 ## tools/compat
