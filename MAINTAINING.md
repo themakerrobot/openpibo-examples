@@ -40,8 +40,9 @@ GitHub Pages 설정: Settings → Pages → Source = **GitHub Actions**.
 - 예제 링크: 이 저장소에 `<기기>/<태그>/` 폴더가 있는 버전에만 첫 화면과 상단 바에 `예제` 버튼이 붙습니다(GitHub 폴더로 연결, `versions.json`의 `examples`). 예제 폴더를 추가하면 다음 배포 때 자동으로 연결됩니다.
 - 테스트 중 버전은 모든 페이지 상단에 경고 띠가 붙습니다. 공식 배포되면 `status`를 `released`로 바꿉니다.
 - `main`에서 `docs/`, `tools/docs/`가 바뀌거나 Actions에서 수동 실행하면 `.github/workflows/docs.yml`이 사이트를 다시 만들어 배포합니다.
+- 영문 문서: 태그(브랜치)에 `docs/build/en`이 있으면 `<기기>/<태그>/en/`으로 함께 올리고, 상단 바에 한국어/English 전환과 첫 화면에 `English` 버튼이 붙습니다. 없는 버전은 한국어만 올립니다.
 - 개발 중(`nightly`) 버전은 태그 대신 각 OS 저장소 `main` 브랜치에 커밋된 `docs/build/html`을 씁니다. 보여 줄 필요가 있을 때 OS 저장소에서 문서를 빌드해 `main`에 커밋해 두면 됩니다.
-- 매일 21:00(KST)에 예약 실행이 돌아 OS `main`에서 `docs/build/html`을 마지막으로 바꾼 커밋을 확인하고(`tools/docs/nightly.py`), 지난 배포(`_nav/nightly.json`)와 다를 때만 다시 배포합니다. 코드만 바뀐 푸시로는 배포되지 않습니다. 바로 올리려면 Actions에서 docs 워크플로를 수동 실행합니다.
+- 매일 21:00(KST)에 예약 실행이 돌아 OS `main`에서 `docs/build`(한국어 `html`·영문 `en`)를 마지막으로 바꾼 커밋을 확인하고(`tools/docs/nightly.py`), 지난 배포(`_nav/nightly.json`)와 다를 때만 다시 배포합니다. 코드만 바뀐 푸시로는 배포되지 않습니다. 바로 올리려면 Actions에서 docs 워크플로를 수동 실행합니다.
 - 로컬 미리보기: `python3 tools/docs/build_site.py --out _site` 후 `_site`를 웹 서버로 엽니다.
 
 ## tools/compat

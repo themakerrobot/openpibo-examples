@@ -4,15 +4,31 @@
   var cfg = window.DOCS_VERSIONS;
   if (!s || !cfg) return;
   var root = s.dataset.root, dev = s.dataset.device, tag = s.dataset.tag, page = s.dataset.page;
-  var LABEL = { nightly: '개발 중', released: '배포', testing: '테스트 중', legacy: '구버전' };
+  var lang = s.dataset.lang === 'en' ? 'en' : 'ko';
+  var EN = lang === 'en';
+  var LABEL = EN
+    ? { nightly: 'dev', released: 'release', testing: 'testing', legacy: 'legacy' }
+    : { nightly: '개발 중', released: '배포', testing: '테스트 중', legacy: '구버전' };
 
-  function url(d, t, p) { return root + d + '/' + t + '/' + (p || 'index.html'); }
+  function find(d, t) {
+    var x = cfg.devices.filter(function (y) { return y.id === d; })[0];
+    return x && x.versions.filter(function (v) { return v.tag === t; })[0];
+  }
+  // 영문(en/)이 없는 버전으로 가면 한국어로
+  function langOf(d, t, l) {
+    var v = find(d, t);
+    return l === 'en' && v && (v.langs || []).indexOf('en') >= 0 ? 'en' : 'ko';
+  }
+  function url(d, t, p, l) {
+    return root + d + '/' + t + '/' + (langOf(d, t, l) === 'en' ? 'en/' : '') + (p || 'index.html');
+  }
 
-  // 같은 페이지가 대상 버전에 있으면 그 페이지로, 없으면 대상 버전 첫 화면으로
-  function go(d, t) {
-    var target = url(d, t, page);
+  // 같은 페이지가 대상 버전(언어)에 있으면 그 페이지로, 없으면 대상 첫 화면으로
+  function go(d, t, l) {
+    l = l || lang;
+    var target = url(d, t, page, l);
     fetch(target, { method: 'HEAD' })
-      .then(function (r) { location.href = r.ok ? target : url(d, t); })
+      .then(function (r) { location.href = r.ok ? target : url(d, t, '', l); })
       .catch(function () { location.href = target; });
   }
 
@@ -26,9 +42,9 @@
   var home = document.createElement('a');
   home.className = 'vbar-home';
   home.href = root + 'index.html';
-  home.title = '버전별 문서 목록';
-  home.setAttribute('aria-label', 'OpenPibo 가이드 — 버전별 문서 목록');
-  home.innerHTML = '<span class="mark" aria-hidden="true">P</span><span class="label">OpenPibo 가이드</span>';
+  home.title = EN ? 'Docs by version' : '버전별 문서 목록';
+  home.setAttribute('aria-label', EN ? 'OpenPibo Guide — docs by version' : 'OpenPibo 가이드 — 버전별 문서 목록');
+  home.innerHTML = '<span class="mark" aria-hidden="true">P</span><span class="label">' + (EN ? 'OpenPibo Guide' : 'OpenPibo 가이드') + '</span>';
   bar.appendChild(home);
 
   var devs = document.createElement('span');
@@ -50,7 +66,7 @@
   bar.appendChild(devs);
 
   var sel = document.createElement('select');
-  sel.setAttribute('aria-label', '버전');
+  sel.setAttribute('aria-label', EN ? 'Version' : '버전');
   device.versions.forEach(function (v) {
     var o = document.createElement('option');
     o.value = v.tag;
@@ -61,6 +77,25 @@
   sel.onchange = function () { go(dev, sel.value); };
   bar.appendChild(sel);
 
+  // 한국어 / English (영문 문서가 있는 버전만)
+  if ((cur.langs || []).indexOf('en') >= 0) {
+    var langs = document.createElement('span');
+    langs.className = 'vbar-devices vbar-langs';
+    [['ko', '한국어'], ['en', 'English']].forEach(function (x) {
+      var a = document.createElement('a');
+      a.textContent = x[1];
+      a.lang = x[0];
+      a.href = '#';
+      if (x[0] === lang) a.className = 'on';
+      a.onclick = function (e) {
+        e.preventDefault();
+        if (x[0] !== lang) go(dev, tag, x[0]);
+      };
+      langs.appendChild(a);
+    });
+    bar.appendChild(langs);
+  }
+
   // 이 버전의 예제 폴더(GitHub)가 있으면 링크
   if (cur.examples) {
     var ex = document.createElement('a');
@@ -68,8 +103,8 @@
     ex.href = cur.examples;
     ex.target = '_blank';
     ex.rel = 'noopener';
-    ex.textContent = '예제';
-    ex.title = '이 버전의 예제 (GitHub)';
+    ex.textContent = EN ? 'Examples' : '예제';
+    ex.title = EN ? 'Examples for this version (GitHub)' : '이 버전의 예제 (GitHub)';
     bar.appendChild(ex);
   }
 
@@ -79,7 +114,9 @@
   if (cur.status === 'nightly') {
     var dev_ = document.createElement('div');
     dev_.className = 'vbar-warn';
-    dev_.textContent = '개발 중인 최신 문서(' + tag + (cur.date ? ', ' + cur.date : '') + ')입니다. 기기 OS 버전과 맞지 않을 수 있습니다.';
+    dev_.textContent = EN
+      ? 'Latest docs under development (' + tag + (cur.date ? ', ' + cur.date : '') + '). They may not match the OS on your device.'
+      : '개발 중인 최신 문서(' + tag + (cur.date ? ', ' + cur.date : '') + ')입니다. 기기 OS 버전과 맞지 않을 수 있습니다.';
     bar.appendChild(dev_);
   } else if (cur.status === 'testing') {
     var warn = document.createElement('div');

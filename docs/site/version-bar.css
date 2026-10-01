@@ -66,6 +66,8 @@
 html.has-vbar body { padding-top: var(--vbar-total); }
 html.has-vbar .wy-nav-side { top: var(--vbar-total); bottom: 0; height: auto; }
 html.has-vbar { scroll-padding-top: var(--vbar-total); }
+/* 문서 자체의 한국어↔English 링크(langswitch.js)는 OS 저장소 폴더(build/html·build/en) 기준이라 여기선 숨기고 바의 전환을 쓴다 */
+html.has-vbar .pb-lang { display: none; }
 /* Furo 테마: 위에 붙는(sticky·fixed) 사이드바·목차·모바일 헤더·서랍을 바 아래로 내린다 */
 html.has-vbar .sidebar-sticky,
 html.has-vbar .toc-sticky { top: var(--vbar-total); height: calc(100vh - var(--vbar-total)); }
