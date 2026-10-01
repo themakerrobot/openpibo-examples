@@ -4,8 +4,9 @@
 
 태그 이름은 YYMMDDvN 형식만 본다. 접미사가 붙은 태그(260915v1-ph, 260930v8-gl 등)는 뺀다.
 날짜(YYMMDD)가 큰 것, 같은 날이면 N 이 큰 것이 마지막 태그다.
+태그 이름과 함께 태그가 가리키는 커밋도 기록해, 같은 이름으로 다시 찍은 태그도 바뀐 것으로 본다.
 
-  python3 tools/docs/latest_tag.py                     기기별 마지막 태그를 JSON 으로 출력
+  python3 tools/docs/latest_tag.py                     기기별 마지막 태그·커밋을 JSON 으로 출력
   python3 tools/docs/latest_tag.py --compare <URL>     배포된 사이트의 _nav/latest.json 과 비교해
                                                        changed=true|false 를 출력 (GitHub Actions 출력용)
 """
@@ -23,17 +24,26 @@ TAG_RE = re.compile(r"^(\d{6})v(\d+)$")
 
 
 def latest_tag(repo_url):
-    out = subprocess.run(["git", "ls-remote", "--tags", "--refs", repo_url],
+    """{"tag": 마지막 태그, "sha": 그 태그가 가리키는 커밋}."""
+    out = subprocess.run(["git", "ls-remote", "--tags", repo_url],
                          check=True, capture_output=True, text=True).stdout
-    tags = [line.rsplit("/", 1)[-1] for line in out.splitlines()]
-    tags = [t for t in tags if TAG_RE.match(t)]
+    sha = {}
+    for line in out.splitlines():
+        h, ref = line.split("\t")
+        name = ref.rsplit("/", 1)[-1]
+        if name.endswith("^{}"):  # 주석 태그는 ^{} 줄이 가리키는 커밋을 쓴다
+            sha[name[:-3]] = h
+        else:
+            sha.setdefault(name, h)
+    tags = [t for t in sha if TAG_RE.match(t)]
     if not tags:
         raise SystemExit(f"{repo_url}: YYMMDDvN 형식 태그가 없습니다")
-    return max(tags, key=lambda t: tuple(int(x) for x in TAG_RE.match(t).groups()))
+    tag = max(tags, key=lambda t: tuple(int(x) for x in TAG_RE.match(t).groups()))
+    return {"tag": tag, "sha": sha[tag]}
 
 
 def state(cfg):
-    """{"<기기>": "<마지막 태그>"} — "track": "latest-tag" 버전이 있는 기기만."""
+    """{"<기기>": {"tag", "sha"}} — "track": "latest-tag" 버전이 있는 기기만."""
     out = {}
     for dev in cfg["devices"]:
         for v in dev["versions"]:
@@ -64,7 +74,7 @@ def main():
         print(f"배포된 상태 없음: {e}", file=sys.stderr)
         prev = None
     for k, t in cur.items():
-        print(f"{k}: {t} (배포본 {(prev or {}).get(k)})", file=sys.stderr)
+        print(f"{k}: {t['tag']} {t['sha'][:7]} (배포본 {(prev or {}).get(k)})", file=sys.stderr)
     print(f"changed={'false' if cur == prev else 'true'}")
 
 

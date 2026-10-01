@@ -8,7 +8,7 @@ openpibo-os.<기기> 태그 안에 커밋된 Sphinx 빌드 결과(docs/build/htm
   <out>/<기기>/<태그>/en/...              해당 태그의 docs/build/en (영문, 있는 버전만)
   <out>/_nav/                           모든 문서 페이지 상단의 버전 바 (JS/CSS)
   <out>/_nav/kit/                       Pibo UI Kit (openpibo-os.pibo design/, versions.json 의 ui)
-  <out>/_nav/latest.json                기기별 마지막 태그 (tools/docs/latest_tag.py 가 다음 배포 여부 판단에 씀)
+  <out>/_nav/latest.json                기기별 마지막 태그·커밋 (tools/docs/latest_tag.py 가 다음 배포 여부 판단에 씀)
 
 문서 원본은 각 OS 저장소 태그가 기준이다. 버전에 "repo" 가 있으면 그 저장소의 태그를 쓴다
 (예: Pibo 구버전 v0.9.2.73 은 openpibo-python).
@@ -163,9 +163,9 @@ def main():
         keep = []
         for v in dev["versions"]:
             if v.get("track") == "latest-tag":
-                if latest[dev["id"]] in tags:
+                if latest[dev["id"]]["tag"] in tags:
                     continue
-                v["tag"] = latest[dev["id"]]
+                v["tag"] = latest[dev["id"]]["tag"]
             keep.append(v)
         dev["versions"] = keep
     add_example_links(cfg)
