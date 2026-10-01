@@ -8,11 +8,11 @@ openpibo-os.<기기> 태그 안에 커밋된 Sphinx 빌드 결과(docs/build/htm
   <out>/<기기>/<태그>/en/...              해당 태그의 docs/build/en (영문, 있는 버전만)
   <out>/_nav/                           모든 문서 페이지 상단의 버전 바 (JS/CSS)
   <out>/_nav/kit/                       Pibo UI Kit (openpibo-os.pibo design/, versions.json 의 ui)
-  <out>/_nav/nightly.json               nightly 버전 문서의 기준 커밋 (tools/docs/nightly.py 가 다음 배포 여부 판단에 씀)
+  <out>/_nav/latest.json                기기별 마지막 태그 (tools/docs/latest_tag.py 가 다음 배포 여부 판단에 씀)
 
 문서 원본은 각 OS 저장소 태그가 기준이다. 버전에 "repo" 가 있으면 그 저장소의 태그를 쓴다
 (예: Pibo 구버전 v0.9.2.73 은 openpibo-python).
-status "nightly" 버전은 태그 대신 브랜치(main)에 커밋된 docs/build/html 을 쓴다.
+"track": "latest-tag" 버전은 OS 저장소의 마지막 태그(YYMMDDvN, 접미사 태그 제외)로 정해진다.
 디자인은 OS 웹 화면(v2)과 같은 Pibo UI Kit 을 쓴다.
 이 스크립트는 복사와 버전 바 삽입만 한다.
 
@@ -31,13 +31,13 @@ import subprocess
 import tarfile
 import tempfile
 
-import nightly
+import latest_tag
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 SRC_DIR = os.path.join(ROOT, "docs")
 DOCS_PATH = "docs/build/html"
 EN_PATH = "docs/build/en"  # 영문 문서. 없는 버전(260624v1 등)은 한국어만 올린다
-STATUS_LABEL = {"nightly": "개발 중", "released": "배포", "testing": "테스트 중", "legacy": "구버전"}
+STATUS_LABEL = {"released": "배포", "testing": "테스트 중", "legacy": "구버전"}
 
 
 def run(cmd, **kw):
@@ -128,8 +128,6 @@ def render_index(cfg):
         latest = next((v["tag"] for v in dev["versions"] if v["status"] == "released"), None)
         for v in dev["versions"]:
             label = STATUS_LABEL.get(v["status"], v["status"])
-            if v.get("date"):
-                label += f' · {v["date"]}'
             badges = f'<span class="pb-badge {v["status"]}">{html.escape(label)}</span>'
             if v["tag"] == latest:
                 badges = '<span class="pb-badge latest">최신</span>' + badges
@@ -158,12 +156,19 @@ def main():
 
     with open(os.path.join(SRC_DIR, "versions.json"), encoding="utf-8") as f:
         cfg = json.load(f)
-    add_example_links(cfg)
-    # nightly 버전: 문서를 마지막으로 바꾼 커밋과 날짜를 붙인다 (첫 화면·상단 바에 날짜 표시)
-    night = nightly.state(cfg)
+    # 마지막 태그 버전: 태그를 정한다. 이미 목록에 있는 태그(예: 배포 태그)면 겹치지 않게 뺀다
+    latest = latest_tag.state(cfg)
     for dev in cfg["devices"]:
+        tags = {v["tag"] for v in dev["versions"] if "tag" in v}
+        keep = []
         for v in dev["versions"]:
-            v.update(night.get(f'{dev["id"]}/{v["tag"]}', {}))
+            if v.get("track") == "latest-tag":
+                if latest[dev["id"]] in tags:
+                    continue
+                v["tag"] = latest[dev["id"]]
+            keep.append(v)
+        dev["versions"] = keep
+    add_example_links(cfg)
     out = os.path.abspath(args.out)
     shutil.rmtree(out, ignore_errors=True)
     os.makedirs(out)
@@ -196,8 +201,8 @@ def main():
         shutil.copy(os.path.join(SRC_DIR, "site", fn), nav)
     with open(os.path.join(nav, "versions.js"), "w", encoding="utf-8") as f:
         f.write("window.DOCS_VERSIONS = " + json.dumps(cfg, ensure_ascii=False) + ";\n")
-    with open(os.path.join(nav, "nightly.json"), "w", encoding="utf-8") as f:
-        json.dump(night, f, ensure_ascii=False, indent=2)
+    with open(os.path.join(nav, "latest.json"), "w", encoding="utf-8") as f:
+        json.dump(latest, f, ensure_ascii=False, indent=2)
     # 파비콘: OS 웹·문서와 같은 파이보 아이콘(문서 _static/icon.png)을 첫 화면에도 쓴다
     for dev in cfg["devices"]:
         icon = os.path.join(out, dev["id"], dev["versions"][0]["tag"], "_static", "icon.png")
