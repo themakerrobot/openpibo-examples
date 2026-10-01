@@ -21,10 +21,6 @@
           "status": "nightly"
         },
         {
-          "tag": "260915v1",
-          "status": "testing"
-        },
-        {
           "tag": "260624v1",
           "status": "released"
         },
@@ -43,10 +39,6 @@
         {
           "tag": "main",
           "status": "nightly"
-        },
-        {
-          "tag": "260916v5",
-          "status": "testing"
         },
         {
           "tag": "260624v1",

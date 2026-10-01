@@ -65,6 +65,19 @@
 
 html.has-vbar body { padding-top: var(--vbar-total); }
 html.has-vbar .wy-nav-side { top: var(--vbar-total); bottom: 0; height: auto; }
+html.has-vbar { scroll-padding-top: var(--vbar-total); }
+/* Furo 테마: 위에 붙는(sticky·fixed) 사이드바·목차·모바일 헤더·서랍을 바 아래로 내린다 */
+html.has-vbar .sidebar-sticky,
+html.has-vbar .toc-sticky { top: var(--vbar-total); height: calc(100vh - var(--vbar-total)); }
+html.has-vbar .mobile-header { top: var(--vbar-total); }
+html.has-vbar .back-to-top { top: calc(var(--vbar-total) + 1rem); }
+/* 좁은 화면에서만 서랍이 fixed 가 된다 (Furo 기준: 목차 82em, 메뉴 63em) */
+@media (max-width: 82em) {
+  html.has-vbar .toc-drawer { top: var(--vbar-total); height: calc(100vh - var(--vbar-total)); }
+}
+@media (max-width: 63em) {
+  html.has-vbar .sidebar-drawer { top: var(--vbar-total); height: calc(100vh - var(--vbar-total)); }
+}
 
 @media (max-width: 640px) {
   .vbar { padding: 4px 10px 0; gap: 6px; }
