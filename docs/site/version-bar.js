@@ -7,8 +7,8 @@
   var lang = s.dataset.lang === 'en' ? 'en' : 'ko';
   var EN = lang === 'en';
   var LABEL = EN
-    ? { nightly: 'dev', released: 'release', testing: 'testing', legacy: 'legacy' }
-    : { nightly: '개발 중', released: '배포', testing: '테스트 중', legacy: '구버전' };
+    ? { released: 'release', testing: 'testing', legacy: 'legacy' }
+    : { released: '배포', testing: '테스트 중', legacy: '구버전' };
 
   function find(d, t) {
     var x = cfg.devices.filter(function (y) { return y.id === d; })[0];
@@ -70,7 +70,7 @@
   device.versions.forEach(function (v) {
     var o = document.createElement('option');
     o.value = v.tag;
-    o.textContent = v.tag + ' · ' + (LABEL[v.status] || v.status) + (v.date ? ' · ' + v.date : '');
+    o.textContent = v.tag + ' · ' + (LABEL[v.status] || v.status);
     if (v.tag === tag) o.selected = true;
     sel.appendChild(o);
   });
@@ -111,22 +111,19 @@
   document.body.insertBefore(bar, document.body.firstChild);
   document.documentElement.classList.add('has-vbar');
 
-  if (cur.status === 'nightly') {
-    var dev_ = document.createElement('div');
-    dev_.className = 'vbar-warn';
-    dev_.textContent = EN
-      ? 'Latest docs under development (' + tag + (cur.date ? ', ' + cur.date : '') + '). They may not match the OS on your device.'
-      : '개발 중인 최신 문서(' + tag + (cur.date ? ', ' + cur.date : '') + ')입니다. 기기 OS 버전과 맞지 않을 수 있습니다.';
-    bar.appendChild(dev_);
-  } else if (cur.status === 'testing') {
+  if (cur.status === 'testing') {
     var warn = document.createElement('div');
     warn.className = 'vbar-warn';
-    warn.textContent = '테스트 중인 버전(' + tag + ')입니다. 공식 배포 전이라 내용이 바뀔 수 있습니다.';
+    warn.textContent = EN
+      ? 'Test version (' + tag + '), not yet officially released. Content may change.'
+      : '테스트 중인 버전(' + tag + ')입니다. 공식 배포 전이라 내용이 바뀔 수 있습니다.';
     bar.appendChild(warn);
   } else if (cur.status === 'legacy') {
     var old = document.createElement('div');
     old.className = 'vbar-warn';
-    old.textContent = '구버전(' + tag + ') 문서입니다. 260624v1 이전 OS를 쓰는 기기에서만 보세요.';
+    old.textContent = EN
+      ? 'Legacy docs (' + tag + '). Only for devices running an OS older than 260624v1.'
+      : '구버전(' + tag + ') 문서입니다. 260624v1 이전 OS를 쓰는 기기에서만 보세요.';
     bar.appendChild(old);
   }
 

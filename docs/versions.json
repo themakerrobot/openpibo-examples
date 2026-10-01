@@ -17,8 +17,8 @@
       "repo": "https://github.com/themakerrobot/openpibo-os.pibo",
       "versions": [
         {
-          "tag": "main",
-          "status": "nightly"
+          "track": "latest-tag",
+          "status": "testing"
         },
         {
           "tag": "260624v1",
@@ -37,8 +37,8 @@
       "repo": "https://github.com/themakerrobot/openpibo-os.pibrain",
       "versions": [
         {
-          "tag": "main",
-          "status": "nightly"
+          "track": "latest-tag",
+          "status": "testing"
         },
         {
           "tag": "260624v1",

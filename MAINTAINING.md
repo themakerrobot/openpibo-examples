@@ -33,7 +33,7 @@ GitHub Pages 설정: Settings → Pages → Source = **GitHub Actions**.
 
 각 OS 태그 안의 문서(`docs/build/html`)를 모아 기기·버전별로 GitHub Pages(<https://themakerrobot.github.io/openpibo-guide/>)에 올립니다. 문서 원본은 OS 저장소 태그가 기준이며, 각 OS 저장소의 기존 Pages는 그대로 둡니다.
 
-- 올릴 버전 목록: `docs/versions.json` (`status`: `nightly` 개발 중 / `released` 배포 / `testing` 테스트 중 / `legacy` 구버전)
+- 올릴 버전 목록: `docs/versions.json` (`status`: `released` 배포 / `testing` 테스트 중 / `legacy` 구버전)
 - 버전에 `repo`를 적으면 기기 기본 저장소 대신 그 저장소의 태그에서 문서를 가져옵니다. Pibo 구버전 `v0.9.2.73`은 `openpibo-python` 태그를 씁니다(piBrain 구버전은 없음).
 - 디자인: OS 웹 화면 v2와 같은 Pibo UI Kit(`openpibo-os.pibo`의 `design/`)을 빌드할 때 가져옵니다(`versions.json`의 `ui`). 키트는 OS 저장소에서만 고칩니다.
 - 사이트 문구는 사용자용으로만 씁니다. 관리 정보는 이 파일에 둡니다.
@@ -41,8 +41,8 @@ GitHub Pages 설정: Settings → Pages → Source = **GitHub Actions**.
 - 테스트 중 버전은 모든 페이지 상단에 경고 띠가 붙습니다. 공식 배포되면 `status`를 `released`로 바꿉니다.
 - `main`에서 `docs/`, `tools/docs/`가 바뀌거나 Actions에서 수동 실행하면 `.github/workflows/docs.yml`이 사이트를 다시 만들어 배포합니다.
 - 영문 문서: 태그(브랜치)에 `docs/build/en`이 있으면 `<기기>/<태그>/en/`으로 함께 올리고, 상단 바에 한국어/English 전환과 첫 화면에 `English` 버튼이 붙습니다. 없는 버전은 한국어만 올립니다.
-- 개발 중(`nightly`) 버전은 태그 대신 각 OS 저장소 `main` 브랜치에 커밋된 `docs/build/html`을 씁니다. 보여 줄 필요가 있을 때 OS 저장소에서 문서를 빌드해 `main`에 커밋해 두면 됩니다.
-- 매일 21:00(KST)에 예약 실행이 돌아 OS `main`에서 `docs/build`(한국어 `html`·영문 `en`)를 마지막으로 바꾼 커밋을 확인하고(`tools/docs/nightly.py`), 지난 배포(`_nav/nightly.json`)와 다를 때만 다시 배포합니다. 코드만 바뀐 푸시로는 배포되지 않습니다. 바로 올리려면 Actions에서 docs 워크플로를 수동 실행합니다.
+- 테스트 중 버전은 `"track": "latest-tag"`로 적어 두면 각 OS 저장소의 마지막 태그로 정해집니다(`tools/docs/latest_tag.py`). 태그 이름은 `YYMMDDvN`만 보고, 접미사가 붙은 태그(`-ph`, `-gl` 등)는 뺍니다. 마지막 태그가 이미 목록에 있는 태그(배포 버전)면 따로 올리지 않습니다.
+- 매일 21:00(KST)에 예약 실행이 돌아 마지막 태그가 지난 배포(`_nav/latest.json`)와 다를 때만 다시 배포합니다. 바로 올리려면 Actions에서 docs 워크플로를 수동 실행합니다.
 - 로컬 미리보기: `python3 tools/docs/build_site.py --out _site` 후 `_site`를 웹 서버로 엽니다.
 
 ## tools/compat
