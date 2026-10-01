@@ -4,7 +4,8 @@ openpibo-os.<기기> 태그 안에 커밋된 Sphinx 빌드 결과(docs/build/htm
 기기·버전별 문서 사이트를 만든다. 버전 목록은 docs/versions.json.
 
   <out>/index.html                      기기·버전 목록 (첫 화면)
-  <out>/<기기>/<태그>/...                 해당 태그의 docs/build/html
+  <out>/<기기>/<태그>/...                 해당 태그의 docs/build/html (한국어)
+  <out>/<기기>/<태그>/en/...              해당 태그의 docs/build/en (영문, 있는 버전만)
   <out>/_nav/                           모든 문서 페이지 상단의 버전 바 (JS/CSS)
   <out>/_nav/kit/                       Pibo UI Kit (openpibo-os.pibo design/, versions.json 의 ui)
   <out>/_nav/nightly.json               nightly 버전 문서의 기준 커밋 (tools/docs/nightly.py 가 다음 배포 여부 판단에 씀)
@@ -35,6 +36,7 @@ import nightly
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 SRC_DIR = os.path.join(ROOT, "docs")
 DOCS_PATH = "docs/build/html"
+EN_PATH = "docs/build/en"  # 영문 문서. 없는 버전(260624v1 등)은 한국어만 올린다
 STATUS_LABEL = {"nightly": "개발 중", "released": "배포", "testing": "테스트 중", "legacy": "구버전"}
 
 
@@ -42,35 +44,52 @@ def run(cmd, **kw):
     return subprocess.run(cmd, check=True, **kw)
 
 
-def fetch_docs(repo_url, tag, dest, cache, path=DOCS_PATH):
-    """태그(또는 브랜치)의 path 를 dest 로 꺼낸다."""
+def fetch_paths(repo_url, tag, cache, paths):
+    """태그(또는 브랜치)에서 paths({저장소 안 경로: 꺼낼 곳})를 꺼내고, 실제로 있던 경로의 집합을 돌려준다."""
     name = repo_url.rstrip("/").split("/")[-1]
     local = os.path.join(cache, name) if cache else None
+    found = set()
     if local and os.path.isdir(os.path.join(local, ".git")):
         # 브랜치는 원격 쪽(origin/<이름>)을, 태그는 태그를 쓴다
         has = lambda r: subprocess.run(["git", "-C", local, "rev-parse", "-q", "--verify", r],
                                        capture_output=True).returncode == 0
         ref = f"origin/{tag}" if has(f"origin/{tag}") else tag
-        data = run(["git", "-C", local, "archive", "--format=tar", ref, path], capture_output=True).stdout
-        with tarfile.open(fileobj=io.BytesIO(data)) as tf:
-            tmp = tempfile.mkdtemp()
-            tf.extractall(tmp)
-            shutil.copytree(os.path.join(tmp, path), dest)
-            shutil.rmtree(tmp)
-        return
+        for path, dest in paths.items():
+            if not has(f"{ref}:{path}"):
+                continue
+            data = run(["git", "-C", local, "archive", "--format=tar", ref, path], capture_output=True).stdout
+            with tarfile.open(fileobj=io.BytesIO(data)) as tf:
+                tmp = tempfile.mkdtemp()
+                tf.extractall(tmp)
+                shutil.copytree(os.path.join(tmp, path), dest)
+                shutil.rmtree(tmp)
+            found.add(path)
+        return found
     tmp = tempfile.mkdtemp()
     try:
         run(["git", "-c", "advice.detachedHead=false", "clone", "--quiet", "--depth", "1", "--branch", tag,
              "--filter=blob:none", "--sparse", repo_url, tmp])
-        run(["git", "-C", tmp, "sparse-checkout", "set", path])
-        shutil.copytree(os.path.join(tmp, path), dest)
+        run(["git", "-C", tmp, "sparse-checkout", "set", *paths])
+        for path, dest in paths.items():
+            if os.path.isdir(os.path.join(tmp, path)):
+                shutil.copytree(os.path.join(tmp, path), dest)
+                found.add(path)
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
+    return found
 
 
-def inject_nav(site_root, version_dir, device, tag):
-    """버전 디렉터리의 모든 html 에 버전 바를 넣는다."""
-    for base, _, files in os.walk(version_dir):
+def fetch_docs(repo_url, tag, dest, cache, path=DOCS_PATH):
+    """태그(또는 브랜치)의 path 를 dest 로 꺼낸다 (없으면 오류)."""
+    if path not in fetch_paths(repo_url, tag, cache, {path: dest}):
+        raise SystemExit(f"{repo_url}@{tag}: {path} 가 없습니다")
+
+
+def inject_nav(site_root, version_dir, device, tag, lang="ko", skip=()):
+    """버전(언어) 디렉터리의 모든 html 에 버전 바를 넣는다. skip 은 건너뛸 하위 폴더(한국어 안의 en/)."""
+    for base, dirs, files in os.walk(version_dir):
+        if base == version_dir:
+            dirs[:] = [d for d in dirs if d not in skip]
         for fn in files:
             if not fn.endswith(".html"):
                 continue
@@ -84,7 +103,7 @@ def inject_nav(site_root, version_dir, device, tag):
             head = f'<link rel="stylesheet" href="{rel_root}_nav/version-bar.css">\n'
             body = (f'<script src="{rel_root}_nav/versions.js"></script>\n'
                     f'<script src="{rel_root}_nav/version-bar.js" data-root="{rel_root}" '
-                    f'data-device="{device}" data-tag="{tag}" data-page="{html.escape(page)}"></script>\n')
+                    f'data-device="{device}" data-tag="{tag}" data-lang="{lang}" data-page="{html.escape(page)}"></script>\n')
             s = s.replace("</head>", head + "</head>", 1) if "</head>" in s else head + s
             s = s.replace("</body>", body + "</body>", 1) if "</body>" in s else s + body
             with open(path, "w", encoding="utf-8") as f:
@@ -115,6 +134,8 @@ def render_index(cfg):
             if v["tag"] == latest:
                 badges = '<span class="pb-badge latest">최신</span>' + badges
             links = f'<a class="pb-btn pb-btn--sm" href="{dev["id"]}/{v["tag"]}/index.html">문서</a>'
+            if "en" in v.get("langs", ()):
+                links += f'<a class="pb-btn pb-btn--sm" href="{dev["id"]}/{v["tag"]}/en/index.html" lang="en">English</a>'
             if v.get("examples"):
                 links += (f'<a class="pb-btn pb-btn--sm" href="{html.escape(v["examples"])}" '
                           f'target="_blank" rel="noopener">예제</a>')
@@ -152,8 +173,13 @@ def main():
             dest = os.path.join(out, dev["id"], v["tag"])
             repo = v.get("repo", dev["repo"])
             print(f"{dev['id']} {v['tag']} <- {repo}")
-            fetch_docs(repo, v["tag"], dest, args.cache)
-            inject_nav(out, dest, dev["id"], v["tag"])
+            found = fetch_paths(repo, v["tag"], args.cache, {DOCS_PATH: dest, EN_PATH: os.path.join(dest, "en")})
+            if DOCS_PATH not in found:
+                raise SystemExit(f"{repo}@{v['tag']}: {DOCS_PATH} 가 없습니다")
+            v["langs"] = ["ko", "en"] if EN_PATH in found else ["ko"]
+            inject_nav(out, dest, dev["id"], v["tag"], "ko", skip=("en",) if EN_PATH in found else ())
+            if EN_PATH in found:
+                inject_nav(out, os.path.join(dest, "en"), dev["id"], v["tag"], "en")
 
     nav = os.path.join(out, "_nav")
     os.makedirs(nav)

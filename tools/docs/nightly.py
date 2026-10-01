@@ -2,7 +2,7 @@
 """
 nightly 버전(status "nightly", 예: 브랜치 main)의 문서가 바뀌었는지 확인한다.
 
-각 nightly 버전마다 OS 저장소에서 docs/build/html 을 마지막으로 바꾼 커밋을 GitHub API 로 찾는다.
+각 nightly 버전마다 OS 저장소에서 docs/build(한국어 html·영문 en)를 마지막으로 바꾼 커밋을 GitHub API 로 찾는다.
 코드만 바뀐 푸시는 무시되고, 빌드한 문서를 커밋했을 때만 값이 바뀐다.
 
   python3 tools/docs/nightly.py                      현재 상태를 JSON 으로 출력
@@ -19,7 +19,7 @@ import urllib.error
 import urllib.request
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-DOCS_PATH = "docs/build/html"
+DOCS_PATH = "docs/build"  # 한국어(html)·영문(en) 빌드 결과
 
 
 def _get(url):
@@ -33,7 +33,7 @@ def _get(url):
 
 
 def last_docs_commit(repo_url, ref):
-    """ref(브랜치)에서 docs/build/html 을 마지막으로 바꾼 커밋 {sha, date}."""
+    """ref(브랜치)에서 docs/build 를 마지막으로 바꾼 커밋 {sha, date}."""
     owner, name = repo_url.rstrip("/").split("/")[-2:]
     data = _get(f"https://api.github.com/repos/{owner}/{name}/commits?sha={ref}&path={DOCS_PATH}&per_page=1")
     if not data:
